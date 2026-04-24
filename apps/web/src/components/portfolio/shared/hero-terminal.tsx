@@ -5,12 +5,12 @@ import * as React from "react";
 // plain-English gloss on the right. Toggle collapses the gloss column.
 export function HeroTerminal() {
   const lines = React.useMemo(() => [
-    { cmd: 'whoami',        gloss: 'who am I' },
-    { out: <><span className="val">suraj kushwaha</span> — sde ii, 4 yrs in backend</> },
-    { cmd: 'cat role.txt',  gloss: 'what I do' },
-    { out: <>backend architect · building <span className="val">agentic AI</span> systems at scale</> },
-    { cmd: 'uptime --prod', gloss: 'what I\'ve shipped' },
-    { out: <><span className="ok">●</span> <span className="val">200+ brands</span> · <span className="val">50M+ requests / week</span> · <span className="val">0 downtime</span> since day 0</> },
+    { cmd: 'cat impact.txt', gloss: 'production footprint' },
+    { out: <><span className="val">50M+ requests / week</span> · <span className="val">200+ brands</span> · <span className="val">0 downtime</span> migrations</> },
+    { cmd: 'whoami', gloss: 'who am I' },
+    { out: <><span className="val">suraj kushwaha</span> — sde ii, backend architect, 4+ yrs</> },
+    { cmd: 'cat focus.txt', gloss: 'what I build' },
+    { out: <>multi-tenant backend systems · event pipelines · <span className="val">agentic AI</span> workflows</> },
     { cmd: 'open /portfolio', gloss: 'scroll to read more ↓' },
   ], []);
   const [step, setStep]   = React.useState(0);

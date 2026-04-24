@@ -7,7 +7,7 @@ export function SkillsSection() {
     <section id="skills" className="reveal">
       <div className="sec-h">
         <span className="n">02</span>
-        <h2>Stack</h2>
+        <h2>Skills</h2>
         <div className="spacer"/>
         <span className="meta">tools I reach for</span>
       </div>

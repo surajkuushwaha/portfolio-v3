@@ -6,7 +6,7 @@ export function ExperienceSection() {
     <section id="experience" className="reveal">
       <div className="sec-h">
         <span className="n">03</span>
-        <h2>Work</h2>
+        <h2>Experience</h2>
         <div className="spacer"/>
         <span className="meta">4+ years</span>
       </div>

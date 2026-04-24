@@ -39,6 +39,7 @@ function PortfolioPage() {
   const [cmdOpen, setCmdOpen] = React.useState(false);
   const [toast, setToast] = React.useState(null);
   const [active, setActive] = React.useState('about');
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
 
   const effectiveTheme = t.theme === 'auto' ? sys : t.theme;
   React.useEffect(() => {
@@ -106,7 +107,7 @@ function PortfolioPage() {
       if (meta && e.key.toLowerCase() === 'k') { e.preventDefault(); setCmdOpen(o => !o); return; }
       if (typing) return;
 
-      if (e.key === 'Escape') { setCmdOpen(false); return; }
+      if (e.key === 'Escape') { setCmdOpen(false); setMobileNavOpen(false); return; }
       if (e.key === '?')      { e.preventDefault(); setCmdOpen(true); return; }
 
       if (e.key.toLowerCase() === 'g' && !meta) {
@@ -136,6 +137,15 @@ function PortfolioPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [effectiveTheme]);
 
+  React.useEffect(() => {
+    if (!mobileNavOpen) return;
+    const onPointerDown = (e) => {
+      if (!e.target.closest?.('.topbar')) setMobileNavOpen(false);
+    };
+    window.addEventListener('pointerdown', onPointerDown);
+    return () => window.removeEventListener('pointerdown', onPointerDown);
+  }, [mobileNavOpen]);
+
   return (
     <>
       <CursorFX mode={t.fxMode} size={t.fxSize} intensity={t.fxIntensity} trail={t.fxTrail}/>
@@ -147,20 +157,48 @@ function PortfolioPage() {
             {DATA.handle}<span className="dot">_</span>
           </a>
           <nav>
-            {NAV_ITEMS.map(([id, label]) => (
-              <a key={id} href={"#" + id}
-                className={active === id ? 'active' : ''}
-                onClick={e => { e.preventDefault(); scrollToSection(id); }}>
-                {label}
-              </a>
-            ))}
-            <button className="k" onClick={() => setCmdOpen(true)} title="Command palette">
+            <div className="desktop-nav">
+              {NAV_ITEMS.map(([id, label]) => (
+                <a key={id} href={"#" + id}
+                  className={active === id ? 'active' : ''}
+                  onClick={e => { e.preventDefault(); scrollToSection(id); }}>
+                  {label}
+                </a>
+              ))}
+            </div>
+            <button className="k" onClick={() => { setCmdOpen(true); setMobileNavOpen(false); }} title="Command palette">
               <span>⌘K</span>
             </button>
             <button className="icon-btn" onClick={toggleTheme} title="Toggle theme (⇧T)" style={{ marginLeft: 4 }}>
               <ThemeIcon dark={effectiveTheme === 'dark'}/>
             </button>
+            <button
+              className="mobile-menu-btn"
+              type="button"
+              aria-label="Toggle navigation"
+              aria-expanded={mobileNavOpen}
+              onClick={() => setMobileNavOpen(open => !open)}
+            >
+              <span/>
+              <span/>
+            </button>
           </nav>
+          {mobileNavOpen && (
+            <div className="mobile-nav" role="menu">
+              {NAV_ITEMS.map(([id, label]) => (
+                <a key={id} href={"#" + id}
+                  role="menuitem"
+                  className={active === id ? 'active' : ''}
+                  onClick={e => {
+                    e.preventDefault();
+                    setMobileNavOpen(false);
+                    scrollToSection(id);
+                  }}>
+                  {label}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="hero" id="top">
