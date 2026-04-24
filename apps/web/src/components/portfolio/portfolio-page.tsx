@@ -30,6 +30,8 @@ import { HeroTerminal } from "./shared/hero-terminal";
 import { scrollToSection } from "./shared/scroll-to";
 import { ThemeIcon } from "./shared/theme-icon";
 
+const IS_DEV = import.meta.env.DEV;
+
 function PortfolioPage() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const sys = useSystemTheme();
@@ -50,9 +52,25 @@ function PortfolioPage() {
   }, [t.accent, t.font]);
 
   React.useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 20);
-    h(); window.addEventListener('scroll', h, { passive: true });
-    return () => window.removeEventListener('scroll', h);
+    let raf = 0;
+    let last = window.scrollY > 20;
+    setScrolled(last);
+    const h = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const next = window.scrollY > 20;
+        if (next !== last) {
+          last = next;
+          setScrolled(next);
+        }
+      });
+    };
+    window.addEventListener('scroll', h, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', h);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   React.useEffect(() => {
@@ -100,7 +118,10 @@ function PortfolioPage() {
         const target = map[e.key.toLowerCase()];
         if (target) {
           e.preventDefault();
-          if (target === 'top') { document.getElementById('top')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+          if (target === 'top') {
+            const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+            document.getElementById('top')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+          }
           else scrollToSection(target);
           gKey = 0;
           return;
@@ -180,7 +201,7 @@ function PortfolioPage() {
         </div>
       )}
 
-      <TweaksPanel>
+      {IS_DEV && <TweaksPanel>
         <TweakSection label="Theme"/>
         <TweakRadio label="Mode" value={t.theme}
           options={[{ label: 'auto', value: 'auto' }, { label: 'light', value: 'light' }, { label: 'dark', value: 'dark' }]}
@@ -225,7 +246,7 @@ function PortfolioPage() {
           onChange={v => setTweak('fxIntensity', v)}/>
         <TweakSlider label="Follow speed" value={t.fxTrail} min={.02} max={.5} step={.01}
           onChange={v => setTweak('fxTrail', v)}/>
-      </TweaksPanel>
+      </TweaksPanel>}
     </>
   );
 }

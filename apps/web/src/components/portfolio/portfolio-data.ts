@@ -6,7 +6,7 @@ export const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accent": "#00d76a",
   "font": "plex",
   "density": "compact",
-  "fxMode": "magnet",
+  "fxMode": "off",
   "fxSize": 520,
   "fxIntensity": 0.08,
   "fxTrail": 0.24

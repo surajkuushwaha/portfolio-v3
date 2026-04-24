@@ -23,11 +23,26 @@ export function CursorFX({ mode = 'glow', size = 520, intensity = .22, trail = .
 
   React.useEffect(() => {
     if (mode === 'off') return;
+    if (window.matchMedia?.('(pointer: coarse), (prefers-reduced-motion: reduce)').matches) return;
+
     let raf = 0;
+    let idleTimer = 0;
     let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y;
     const history = Array.from({ length: trailCount }, () => ({ x, y }));
 
-    const onMove = e => { tx = e.clientX; ty = e.clientY; };
+    const start = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+      clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }, 180);
+    };
+    const onMove = e => {
+      tx = e.clientX;
+      ty = e.clientY;
+      start();
+    };
     const onClick = e => {
       if (mode !== 'ripple') return;
       const id = Math.random().toString(36).slice(2);
@@ -72,9 +87,8 @@ export function CursorFX({ mode = 'glow', size = 520, intensity = .22, trail = .
       raf = requestAnimationFrame(tick);
     };
 
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerdown', onClick);
-    raf = requestAnimationFrame(tick);
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('pointerdown', onClick, { passive: true });
 
     let onResize = null;
     if (mode === 'magnet' && canvasRef.current) {
@@ -93,6 +107,7 @@ export function CursorFX({ mode = 'glow', size = 520, intensity = .22, trail = .
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerdown', onClick);
       if (onResize) window.removeEventListener('resize', onResize);
+      clearTimeout(idleTimer);
       cancelAnimationFrame(raf);
     };
   }, [mode, trail, intensity]);
