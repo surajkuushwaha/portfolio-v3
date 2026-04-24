@@ -1,0 +1,4 @@
+{
+  "buildCommand": "pnpm turbo build --filter=web && cp -r apps/web/.vercel/output .vercel/output",
+  "installCommand": "pnpm install"
+}
