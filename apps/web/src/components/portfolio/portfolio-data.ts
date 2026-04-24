@@ -28,6 +28,7 @@ export const SECTION_IDS = ['about','skills','experience','projects','now','writ
 export const DATA = {
   name: "Suraj Kushwaha",
   handle: "surajkuushwaha",
+  city: "Ahmedabad",
   initials: "SK",
   role: "SDE II",
   tagline: "Backend Architect · Agentic AI Systems at Scale",

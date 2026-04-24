@@ -172,7 +172,7 @@ function PortfolioPage() {
                 <b>{DATA.role}</b>
                 <span className="sep">·</span>Backend Architect
                 <span className="sep">·</span>Agentic AI
-                <span className="sep">·</span>Bengaluru
+                <span className="sep">·</span>{DATA.city}
               </p>
               <div className="status"><span className="blip"/>available for interesting problems</div>
             </div>

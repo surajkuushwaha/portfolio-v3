@@ -17,6 +17,7 @@ export function HeroTerminal() {
   const [typed, setTyped] = React.useState('');
   const [done, setDone]   = React.useState(false);
   const [plain, setPlain] = React.useState(false);
+  const [closeBlocked, setCloseBlocked] = React.useState(false);
 
   React.useEffect(() => {
     if (step >= lines.length) { setDone(true); return; }
@@ -34,12 +35,25 @@ export function HeroTerminal() {
     }
   }, [step, typed, lines]);
 
+  const closeTab = () => {
+    setCloseBlocked(false);
+    window.close();
+
+    window.setTimeout(() => {
+      setCloseBlocked(true);
+    }, 120);
+  };
+
   return (
     <div className="term">
       <div className="gloss" aria-hidden="true"/>
       <div className="noise" aria-hidden="true"/>
       <div className="term-head">
-        <div className="dots"><span/><span/><span/></div>
+        <div className="dots">
+          <button type="button" onClick={closeTab} aria-label="Close tab" title="Close tab"/>
+          <span/>
+          <span/>
+        </div>
         <span className="ttl">~/suraj — zsh</span>
         <button className="lang" onClick={() => setPlain(p => !p)} title="Toggle plain-English view">
           <span className="sw"/>{plain ? 'terminal' : 'plain english'}
@@ -72,6 +86,17 @@ export function HeroTerminal() {
               <span className="prompt">{'$ '}</span>
               <span className="cursor" />
             </div>
+          </div>
+        )}
+        {closeBlocked && (
+          <div className="term-row">
+            <div>
+              <span className="prompt">{'$ '}</span>
+              <span className="cmd">close tab</span>
+              <br/>
+              <span className="dim">permission denied: browser blocked window.close()</span>
+            </div>
+            <div className="gloss">nice try</div>
           </div>
         )}
       </div>
