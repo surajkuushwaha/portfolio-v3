@@ -1,0 +1,1565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Suraj Kushwaha — SDE II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Serif:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  :root{
+    --sans:'IBM Plex Sans',ui-sans-serif,system-ui,-apple-system,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --serif:'IBM Plex Serif',ui-serif,Georgia,serif;
+    /* light */
+    --bg:#fafafa;
+    --bg-2:#ffffff;
+    --fg:#0a0a0a;
+    --fg-2:#171717;
+    --muted:#737373;
+    --muted-2:#a3a3a3;
+    --line:#e5e5e5;
+    --line-2:#d4d4d4;
+    --hover:#f5f5f5;
+    --accent:#00d76a; /* terminal green */
+    --accent-ink:#0a0a0a;
+  }
+  html[data-theme="dark"]{
+    --bg:#0a0a0a;
+    --bg-2:#111111;
+    --fg:#fafafa;
+    --fg-2:#e5e5e5;
+    --muted:#737373;
+    --muted-2:#525252;
+    --line:#1f1f1f;
+    --line-2:#2a2a2a;
+    --hover:#171717;
+    --accent:#00e676;
+    --accent-ink:#0a0a0a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    font-feature-settings:"ss01","cv01";
+  }
+  body{min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:var(--accent-ink)}
+  button{font-family:inherit}
+
+  /* cursor effect — size/intensity driven by CSS vars set on .fx-root */
+  .fx-root{--fx-size:520px;--fx-intensity:.22;--fx-trail:.12}
+
+  /* GLOW — subtle accent glow following cursor */
+  .cursor-glow{
+    position:fixed;pointer-events:none;z-index:0;left:0;top:0;
+    width:var(--fx-size);height:var(--fx-size);border-radius:50%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) calc(var(--fx-intensity) * 100%),transparent) 0%,transparent 60%);
+    filter:blur(40px);
+    transform:translate(-50%,-50%);
+    transition:opacity .3s;
+  }
+  html[data-theme="dark"] .cursor-glow{
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) calc((var(--fx-intensity) + .08) * 100%),transparent) 0%,transparent 60%);
+  }
+
+  /* AURORA — multi-hue blob, slow drift */
+  .cursor-aurora{
+    position:fixed;pointer-events:none;z-index:0;left:0;top:0;
+    width:var(--fx-size);height:var(--fx-size);border-radius:50%;
+    background:
+      radial-gradient(circle at 30% 30%, color-mix(in srgb,var(--accent) calc(var(--fx-intensity) * 120%),transparent) 0%, transparent 55%),
+      radial-gradient(circle at 70% 60%, color-mix(in srgb,#ff6ec7 calc(var(--fx-intensity) * 90%),transparent) 0%, transparent 55%),
+      radial-gradient(circle at 50% 80%, color-mix(in srgb,#6ee7ff calc(var(--fx-intensity) * 80%),transparent) 0%, transparent 55%);
+    filter:blur(55px) saturate(160%);
+    transform:translate(-50%,-50%);
+    animation:fx-aur-spin 14s linear infinite;
+  }
+  @keyframes fx-aur-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+  /* SPOTLIGHT — dim page outside a soft circle */
+  .cursor-spot{
+    position:fixed;pointer-events:none;z-index:5;inset:0;
+    background:radial-gradient(
+      var(--fx-size) circle at var(--fx-x,50%) var(--fx-y,50%),
+      transparent 0%,
+      transparent 40%,
+      color-mix(in srgb,#000 calc(var(--fx-intensity) * 180%),transparent) 100%);
+    mix-blend-mode:multiply;
+  }
+  html[data-theme="dark"] .cursor-spot{mix-blend-mode:normal;
+    background:radial-gradient(
+      var(--fx-size) circle at var(--fx-x,50%) var(--fx-y,50%),
+      transparent 0%,
+      transparent 40%,
+      color-mix(in srgb,#000 calc(var(--fx-intensity) * 260%),transparent) 100%);
+  }
+
+  /* TRAIL — fading dots */
+  .cursor-trail-dot{
+    position:fixed;pointer-events:none;z-index:4;
+    width:10px;height:10px;border-radius:50%;
+    background:var(--accent);
+    transform:translate(-50%,-50%);
+    opacity:var(--o,1);
+    filter:blur(.5px);
+    box-shadow:0 0 10px color-mix(in srgb,var(--accent) 60%,transparent);
+  }
+
+  /* CROSSHAIR — thin lines that span viewport */
+  .cursor-crosshair{position:fixed;pointer-events:none;z-index:4;inset:0}
+  .cursor-crosshair::before,.cursor-crosshair::after{
+    content:"";position:absolute;
+    background:color-mix(in srgb,var(--accent) calc(var(--fx-intensity) * 200%),transparent);
+  }
+  .cursor-crosshair::before{left:var(--fx-x,50%);top:0;bottom:0;width:1px;transform:translateX(-.5px)}
+  .cursor-crosshair::after{top:var(--fx-y,50%);left:0;right:0;height:1px;transform:translateY(-.5px)}
+
+  /* RIPPLE — click-triggered expanding ring */
+  .cursor-ripple{
+    position:fixed;pointer-events:none;z-index:6;
+    width:20px;height:20px;border-radius:50%;
+    border:2px solid var(--accent);
+    transform:translate(-50%,-50%) scale(1);
+    animation:fx-ripple .9s ease-out forwards;
+  }
+  @keyframes fx-ripple{
+    to{transform:translate(-50%,-50%) scale(18);opacity:0;border-width:1px}
+  }
+
+  /* MAGNET — constellation dots that attract to cursor */
+  .cursor-magnet-canvas{position:fixed;pointer-events:none;z-index:0;inset:0}
+
+  /* app shell */
+  .app{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:64px 32px 120px;}
+  .app.dense{padding:40px 28px 80px}
+  @media (max-width:640px){ .app{padding:40px 20px 80px} }
+
+  /* top bar — translucent, glassy */
+  .topbar{display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:16px;z-index:20;padding:12px 14px;margin:8px 0 24px;
+    background:color-mix(in srgb,var(--bg-2) 55%,transparent);
+    backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+    border:1px solid color-mix(in srgb,var(--line) 70%,transparent);
+    border-radius:12px;
+    box-shadow:0 1px 0 color-mix(in srgb,#fff 40%,transparent) inset,
+               0 6px 24px -12px rgba(0,0,0,.12);
+    transition:background .25s,border-color .25s,box-shadow .25s;
+  }
+  html[data-theme="dark"] .topbar{
+    background:color-mix(in srgb,var(--bg-2) 45%,transparent);
+    box-shadow:0 1px 0 color-mix(in srgb,#fff 6%,transparent) inset,
+               0 10px 30px -14px rgba(0,0,0,.6);
+  }
+  .topbar.scrolled{
+    background:color-mix(in srgb,var(--bg-2) 75%,transparent);
+    box-shadow:0 1px 0 color-mix(in srgb,#fff 40%,transparent) inset,
+               0 10px 30px -14px rgba(0,0,0,.18);
+  }
+  html[data-theme="dark"] .topbar.scrolled{
+    background:color-mix(in srgb,var(--bg-2) 65%,transparent);
+  }
+  .topbar .brand{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:-.01em}
+  .topbar .brand .dot{color:var(--accent)}
+  .topbar nav{display:flex;gap:2px;align-items:center}
+  .topbar nav a, .topbar nav button{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    padding:6px 10px;border-radius:6px;background:transparent;border:0;cursor:pointer;
+    transition:color .15s,background .15s;
+  }
+  .topbar nav a:hover, .topbar nav button:hover{color:var(--fg);background:var(--hover)}
+  .topbar nav a.active{color:var(--fg);background:var(--hover)}
+  .topbar nav a.active::before{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--accent);margin-right:6px;vertical-align:2px}
+  .topbar .k{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--mono);font-size:11px;color:var(--muted);
+    padding:4px 8px;border:1px solid var(--line);border-radius:6px;
+    background:var(--bg-2);cursor:pointer;
+  }
+  .topbar .k kbd{font-family:var(--mono);font-size:10px;background:var(--hover);padding:1px 4px;border-radius:3px;border:1px solid var(--line)}
+  .topbar .k:hover{border-color:var(--line-2);color:var(--fg)}
+
+  /* hero / terminal */
+  .hero{margin:40px 0 72px}
+  /* macOS-style frosted glass panel */
+  .term{
+    position:relative;
+    font-family:var(--mono);font-size:14px;line-height:1.7;
+    border:1px solid color-mix(in srgb,var(--line) 60%,transparent);
+    border-radius:14px;overflow:hidden;
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb,var(--bg-2) 35%,transparent) 0%,
+        color-mix(in srgb,var(--bg-2) 55%,transparent) 100%);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    box-shadow:
+      0 1px 0 color-mix(in srgb,#fff 18%,transparent) inset,       /* top specular */
+      0 -1px 0 color-mix(in srgb,#000 10%,transparent) inset,       /* bottom shade */
+      0 1px 1px color-mix(in srgb,#fff 6%,transparent) inset,
+      0 20px 60px -20px rgba(0,0,0,.35),
+      0 8px 24px -12px rgba(0,0,0,.25);
+    transition:border-color .2s, box-shadow .2s;
+  }
+  /* glossy highlight across the very top */
+  .term > .gloss{
+    position:absolute;left:0;right:0;top:0;height:46%;pointer-events:none;z-index:0;
+    background:linear-gradient(180deg,
+      color-mix(in srgb,#fff 8%,transparent) 0%,
+      color-mix(in srgb,#fff 2%,transparent) 55%,
+      transparent 100%);
+    mix-blend-mode:screen;
+  }
+  /* subtle grain so the blur doesn't look plasticky */
+  .term > .noise{
+    position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.035;
+    background-image:radial-gradient(rgba(255,255,255,.9) 1px,transparent 1px);
+    background-size:3px 3px;
+    mix-blend-mode:overlay;
+  }
+  /* localized glow that follows the pointer (set via JS as CSS vars) */
+  .term::before{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),
+      color-mix(in srgb,var(--accent) 28%,transparent) 0%,
+      color-mix(in srgb,var(--accent) 10%,transparent) 30%,
+      transparent 60%);
+    opacity:0;transition:opacity .2s;
+  }
+  .term:hover::before{opacity:1}
+  /* thin border-mask that lights up only near the cursor */
+  .term::after{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    padding:1px;
+    background:radial-gradient(160px circle at var(--mx,50%) var(--my,50%),
+      var(--accent) 0%,transparent 70%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    opacity:0;transition:opacity .2s;
+  }
+  .term:hover::after{opacity:1}
+  .term-head{display:flex;align-items:center;gap:10px;padding:11px 14px;
+    border-bottom:1px solid color-mix(in srgb,var(--line) 50%,transparent);
+    font-size:11px;color:var(--muted);
+    position:relative;z-index:1;
+    background:linear-gradient(180deg,
+      color-mix(in srgb,var(--bg-2) 25%,transparent) 0%,
+      color-mix(in srgb,var(--bg-2) 8%,transparent) 100%);
+    box-shadow:0 1px 0 color-mix(in srgb,#fff 8%,transparent) inset;
+  }
+  .term-body{position:relative;z-index:1}
+  /* real macOS traffic lights */
+  .term-head .dots{display:flex;gap:8px;align-items:center}
+  .term-head .dots span{
+    width:12px;height:12px;border-radius:50%;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18) inset,
+               0 1px 1px rgba(255,255,255,.25) inset;
+  }
+  .term-head .dots span:nth-child(1){background:radial-gradient(circle at 35% 30%,#ff8177,#ff5f57 70%)}
+  .term-head .dots span:nth-child(2){background:radial-gradient(circle at 35% 30%,#ffd27a,#febc2e 70%)}
+  .term-head .dots span:nth-child(3){background:radial-gradient(circle at 35% 30%,#5ae47f,#28c840 70%)}
+  /* light-mode glass tuning */
+  html[data-theme="light"] .term{
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb,#fff 65%,transparent) 0%,
+        color-mix(in srgb,#fff 45%,transparent) 100%);
+    border-color:color-mix(in srgb,#000 10%,transparent);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.9) inset,
+      0 -1px 0 rgba(0,0,0,.05) inset,
+      0 20px 60px -24px rgba(0,0,0,.18),
+      0 8px 24px -14px rgba(0,0,0,.12);
+  }
+  html[data-theme="light"] .term > .gloss{mix-blend-mode:normal;opacity:.6;
+    background:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.15) 55%,transparent 100%);
+  }
+  html[data-theme="light"] .term > .noise{opacity:.02;mix-blend-mode:multiply}
+  .term-head .ttl{margin-left:6px;font-family:var(--mono)}
+  .term-head .lang{margin-left:auto;display:inline-flex;align-items:center;gap:4px;
+    font-family:var(--mono);font-size:10px;color:var(--muted);
+    padding:2px 8px;border:1px solid var(--line);border-radius:999px;
+    background:var(--bg);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;
+    transition:color .15s,border-color .15s,background .15s;
+  }
+  .term-head .lang:hover{color:var(--fg);border-color:var(--line-2)}
+  .term-head .lang .sw{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+  .term-body-pad{padding:18px 18px 22px;min-height:180px}
+  .term-row{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:baseline}
+  @media (max-width:560px){.term-row{grid-template-columns:1fr;gap:0}}
+  .term-row .gloss{font-family:var(--sans);font-size:12px;color:var(--muted-2);
+    text-align:right;letter-spacing:-.005em;font-style:italic;white-space:nowrap;
+    opacity:.85;
+  }
+  @media (max-width:560px){.term-row .gloss{text-align:left;font-size:11px;margin-bottom:8px;padding-left:14px;border-left:2px solid var(--line)}}
+  .term .prompt{color:var(--muted)}
+  .term .cmd{color:var(--fg)}
+  .term .ok{color:var(--accent)}
+  .term .dim{color:var(--muted)}
+  .term .val{color:var(--fg-2);font-weight:500}
+  .term .cursor{display:inline-block;width:8px;height:16px;background:var(--accent);vertical-align:-3px;margin-left:2px;animation:blink 1s steps(2) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* hero name block (post-terminal intro) */
+  .name-block{margin-top:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .name-block h1{font-family:var(--sans);font-size:34px;font-weight:600;letter-spacing:-.025em;margin:0 0 8px;line-height:1.1}
+  .name-block .role{font-family:var(--mono);font-size:13px;color:var(--muted);margin:0;letter-spacing:-.01em}
+  .name-block .role .sep{opacity:.4;margin:0 6px}
+  .name-block .role b{color:var(--fg-2);font-weight:500}
+  .avatar{
+    width:56px;height:56px;border-radius:50%;
+    background:var(--fg);color:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-.02em;
+    flex-shrink:0;
+  }
+
+  /* status pill — translucent */
+  .status{display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    padding:4px 10px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:999px;
+    background:color-mix(in srgb,var(--bg-2) 50%,transparent);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  .status .blip{width:6px;height:6px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);
+    animation:blip 1.8s ease-out infinite;
+  }
+  @keyframes blip{
+    0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}
+    70%{box-shadow:0 0 0 8px transparent}
+    100%{box-shadow:0 0 0 0 transparent}
+  }
+
+  /* section */
+  section{padding:48px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0;padding-top:0}
+  .dense section{padding:32px 0}
+  .sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:24px}
+  .sec-h .n{font-family:var(--mono);font-size:12px;color:var(--muted-2);letter-spacing:.02em}
+  .sec-h h2{font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:-.01em;margin:0;color:var(--fg)}
+  .sec-h .spacer{flex:1;height:1px;background:var(--line);margin-bottom:4px}
+  .sec-h .meta{font-family:var(--mono);font-size:11px;color:var(--muted-2)}
+
+  /* prose */
+  .prose{font-size:15px;line-height:1.7;color:var(--fg-2);max-width:62ch}
+  .prose p{margin:0 0 14px}
+  .prose a{border-bottom:1px solid var(--line-2);padding-bottom:1px;transition:border-color .15s,color .15s}
+  .prose a:hover{border-color:var(--accent);color:var(--fg)}
+  .prose code{font-family:var(--mono);font-size:13px;background:var(--hover);padding:1px 6px;border-radius:4px}
+
+  /* stats — narrative business-impact cards (reads to CEO/HR, not just devs) */
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:28px}
+  @media (max-width:640px){.stats{grid-template-columns:1fr}}
+  .stat{position:relative;padding:20px 20px 18px;
+    border:1px solid color-mix(in srgb,var(--line) 75%,transparent);border-radius:12px;
+    background:color-mix(in srgb,var(--bg-2) 55%,transparent);
+    backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);
+    display:flex;gap:16px;align-items:flex-start;overflow:hidden;
+    transition:border-color .2s,transform .2s,box-shadow .2s;
+  }
+  .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);
+    transform:scaleY(.4);transform-origin:top;transition:transform .25s;
+  }
+  .stat:hover{border-color:var(--line-2);transform:translateY(-1px);box-shadow:0 4px 18px -8px rgba(0,0,0,.1)}
+  .stat:hover::before{transform:scaleY(1)}
+  .stat .ic{width:36px;height:36px;border-radius:10px;background:var(--hover);
+    display:flex;align-items:center;justify-content:center;color:var(--fg-2);flex-shrink:0;
+    border:1px solid var(--line);
+  }
+  .stat .ic svg{width:18px;height:18px;stroke-width:1.6}
+  .stat .body{flex:1;min-width:0}
+  .stat .row{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:2px}
+  .stat .v{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:-.02em;color:var(--fg);line-height:1}
+  .stat .v .u{color:var(--accent);margin-left:1px}
+  .stat .l{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--fg-2);letter-spacing:-.005em}
+  .stat .cap{font-family:var(--sans);font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px;max-width:28ch}
+  .stat.hero-stat{grid-column:1 / -1;padding:22px 22px 20px}
+  .stat.hero-stat .v{font-size:34px}
+  .stat.hero-stat .cap{max-width:56ch;font-size:13px}
+
+  /* skills — dual-read: dev-legible + human-readable */
+  .skills{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media (max-width:720px){.skills{grid-template-columns:1fr}}
+  .skill-card{position:relative;padding:18px;
+    border:1px solid color-mix(in srgb,var(--line) 75%,transparent);border-radius:12px;
+    background:color-mix(in srgb,var(--bg-2) 55%,transparent);
+    backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);
+    transition:border-color .2s,transform .2s,box-shadow .2s;
+    overflow:hidden;display:flex;flex-direction:column;gap:12px;
+  }
+  .skill-card:hover{border-color:var(--line-2);transform:translateY(-1px);
+    box-shadow:0 8px 24px -12px rgba(0,0,0,.1)}
+  .skill-card.wide{grid-column:1 / -1}
+  .skill-head{display:flex;align-items:center;gap:12px}
+  .skill-ic{width:34px;height:34px;border-radius:9px;
+    background:color-mix(in srgb,var(--accent) 12%,var(--hover));
+    border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line));
+    display:flex;align-items:center;justify-content:center;color:var(--fg-2);flex-shrink:0;
+  }
+  .skill-ic svg{width:16px;height:16px;stroke-width:1.8}
+  .skill-title{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+  .skill-title .t{font-family:var(--sans);font-size:15px;font-weight:600;color:var(--fg);letter-spacing:-.005em}
+  .skill-title .h{font-family:var(--sans);font-size:13px;color:var(--muted);line-height:1.4;letter-spacing:-.005em}
+  .skill-yrs{font-family:var(--mono);font-size:11px;color:var(--muted);
+    padding:3px 8px;border:1px solid var(--line);border-radius:999px;
+    background:color-mix(in srgb,var(--bg) 60%,transparent);white-space:nowrap;
+  }
+  .skill-yrs b{color:var(--accent);font-weight:600}
+  .skill-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .skill-tags span{font-family:var(--mono);font-size:12.5px;color:var(--fg-2);
+    padding:4px 9px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);
+    border-radius:6px;background:color-mix(in srgb,var(--bg) 50%,transparent);
+    transition:color .15s,border-color .15s,background .15s;
+  }
+  .skill-tags span:hover{color:var(--fg);border-color:var(--accent);
+    background:color-mix(in srgb,var(--accent) 8%,transparent)}
+  .skill-tags span.star{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+  .skill-tags span.star::before{content:"★ ";opacity:.85}
+
+  /* experience */
+  .job{margin-bottom:28px}
+  .job:last-child{margin-bottom:0}
+  .job-h{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:4px;flex-wrap:wrap}
+  .job-h .co{font-family:var(--sans);font-size:15px;font-weight:600;color:var(--fg);letter-spacing:-.01em}
+  .job-h .co a{border-bottom:1px solid transparent;transition:border-color .15s}
+  .job-h .co a:hover{border-color:var(--accent)}
+  .job-h .when{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .job .role{font-family:var(--mono);font-size:13px;color:var(--muted);margin:0 0 12px}
+
+  /* role timeline — when one job contains multiple title stages */
+  .role-timeline{margin:6px 0 14px;padding:10px 12px 8px;
+    border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:10px;
+    background:color-mix(in srgb,var(--bg-2) 40%,transparent);
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .role-step{display:grid;grid-template-columns:14px 1fr;gap:10px;align-items:start;position:relative}
+  .role-step + .role-step::before{
+    content:"";position:absolute;left:6px;top:-8px;width:2px;height:8px;
+    background:color-mix(in srgb,var(--line) 80%,transparent);
+  }
+  .role-dot{width:10px;height:10px;border-radius:50%;margin-top:5px;
+    background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent);
+  }
+  .role-step:not(:first-child) .role-dot{
+    background:transparent;border:1.5px solid color-mix(in srgb,var(--accent) 55%,var(--line));
+    box-shadow:none;
+  }
+  .role-body{display:flex;flex-direction:column;gap:1px}
+  .role-title{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--fg);letter-spacing:-.005em;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .role-note{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--muted);
+    padding:1px 6px;border:1px solid var(--line);border-radius:999px;letter-spacing:.02em;text-transform:uppercase;
+  }
+  .role-step:first-child .role-note{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+  .role-span{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .job ul{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+  .job li{font-size:14px;line-height:1.65;color:var(--fg-2);padding-left:18px;position:relative}
+  .job li::before{content:"";position:absolute;left:0;top:10px;width:8px;height:1px;background:var(--muted-2)}
+
+  /* projects */
+  .projects{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+  .project{display:grid;grid-template-columns:1fr auto;gap:16px 24px;
+    padding:18px 0;border-bottom:1px solid var(--line);
+    transition:padding .15s;
+  }
+  .project:hover{padding-left:8px}
+  .project .p-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .project .p-h h3{font-family:var(--sans);font-size:15px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .project .p-h h3 a:hover{color:var(--accent)}
+  .project .p-h h3 a::after{content:" ↗";font-family:var(--mono);font-size:11px;color:var(--muted-2);transition:color .15s}
+  .project .p-h h3 a:hover::after{color:var(--accent)}
+  .project .p-h .date{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .project .desc{font-size:14px;line-height:1.6;color:var(--fg-2);margin:6px 0 10px;max-width:62ch}
+  .project .stack{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px}
+  .project .stack span{padding:2px 7px;background:var(--hover);border-radius:4px}
+  .project .aside{font-family:var(--mono);font-size:11px;color:var(--muted-2);text-align:right;white-space:nowrap}
+
+  /* education */
+  .edu{display:flex;flex-direction:column;gap:14px}
+  .edu-item{display:flex;justify-content:space-between;gap:16px;padding:4px 0;flex-wrap:wrap}
+  .edu-item .school{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--fg)}
+  .edu-item .deg{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:2px}
+  .edu-item .when{font-family:var(--mono);font-size:11px;color:var(--muted-2);white-space:nowrap}
+
+  /* contact */
+  .contact{display:flex;flex-direction:column;gap:12px}
+  .contact .lead{font-size:18px;line-height:1.5;color:var(--fg);font-family:var(--serif);font-weight:500;max-width:40ch;letter-spacing:-.01em;margin-bottom:6px}
+  .contact-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center}
+  .email-combo{display:inline-flex;align-items:stretch}
+  .email-combo .btn{border-radius:7px}
+  .email-combo .email-main{border-top-right-radius:0;border-bottom-right-radius:0;border-right:1px solid color-mix(in srgb,var(--bg) 25%,var(--fg));padding-right:10px}
+  .email-combo .email-copy{border-top-left-radius:0;border-bottom-left-radius:0;padding:8px 10px;border-left:0}
+  .email-combo .email-copy .k{margin-left:0}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:12px;font-weight:500;
+    padding:8px 12px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:7px;
+    background:color-mix(in srgb,var(--bg-2) 55%,transparent);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    color:var(--fg-2);cursor:pointer;
+    transition:border-color .15s,background .15s,color .15s,transform .1s;
+  }
+  .btn:hover{border-color:var(--line-2);background:var(--hover);color:var(--fg)}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+  .btn.primary:hover{background:var(--fg-2);border-color:var(--fg-2)}
+  .btn .ic{width:13px;height:13px;opacity:.75}
+  .btn .k{font-family:var(--mono);font-size:10px;padding:1px 4px;background:var(--hover);border-radius:3px;border:1px solid var(--line);color:var(--muted);margin-left:4px}
+  .btn.primary .k{background:color-mix(in srgb,var(--fg) 80%,transparent);border-color:transparent;color:var(--bg)}
+
+  /* writing placeholder — translucent */
+  .writing-empty{padding:22px 20px;border:1px dashed var(--line-2);border-radius:10px;
+    font-family:var(--mono);font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px;
+    background:color-mix(in srgb,var(--bg-2) 50%,transparent);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  .writing-empty::before{content:"";width:6px;height:6px;background:var(--muted-2);border-radius:50%}
+
+  /* footer */
+  footer{margin-top:72px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;color:var(--muted);
+  }
+  footer a:hover{color:var(--fg)}
+
+  /* toast */
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+    z-index:100;font-family:var(--mono);font-size:12px;
+    padding:10px 14px;background:var(--fg);color:var(--bg);
+    border-radius:8px;display:flex;align-items:center;gap:8px;
+    box-shadow:0 10px 40px rgba(0,0,0,.2);
+    transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s;opacity:0;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast .ok{color:var(--accent)}
+
+  /* cmdk */
+  .cmdk-veil{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--bg) 60%,transparent);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    display:flex;align-items:flex-start;justify-content:center;padding:15vh 24px 24px;
+    animation:fade .15s ease-out;
+  }
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .cmdk{width:560px;max-width:100%;background:var(--bg-2);border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.25);overflow:hidden;
+    animation:pop .18s cubic-bezier(.2,.9,.3,1.2);
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .cmdk input{
+    width:100%;font-family:var(--mono);font-size:14px;
+    padding:16px 18px;border:0;background:transparent;color:var(--fg);outline:none;
+    border-bottom:1px solid var(--line);
+  }
+  .cmdk input::placeholder{color:var(--muted-2)}
+  .cmdk-list{max-height:360px;overflow-y:auto;padding:6px}
+  .cmdk-group{padding:6px 0}
+  .cmdk-group-h{font-family:var(--mono);font-size:10px;color:var(--muted-2);
+    text-transform:uppercase;letter-spacing:.08em;padding:6px 12px}
+  .cmdk-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:6px;
+    font-family:var(--mono);font-size:13px;color:var(--fg-2);cursor:pointer;
+  }
+  .cmdk-item.active{background:var(--hover);color:var(--fg)}
+  .cmdk-item .hint{margin-left:auto;color:var(--muted-2);font-size:11px}
+  .cmdk-item .ic{width:14px;height:14px;color:var(--muted);flex-shrink:0}
+  .cmdk-foot{display:flex;justify-content:space-between;padding:8px 14px;
+    border-top:1px solid var(--line);font-family:var(--mono);font-size:10px;color:var(--muted);
+    background:var(--bg);
+  }
+  .cmdk-foot kbd{background:var(--hover);padding:1px 5px;border-radius:3px;border:1px solid var(--line);margin:0 2px}
+
+  /* fade-in-on-scroll */
+  .reveal{opacity:0;transform:translateY(8px);transition:opacity .5s ease-out,transform .5s ease-out}
+  .reveal.in{opacity:1;transform:none}
+
+  /* section anchor offset */
+  section[id]{scroll-margin-top:80px;transition:background .4s}
+  section[id].sec-flash .sec-h .n{color:var(--accent)}
+  section[id].sec-flash .sec-h .spacer{background:var(--accent)}
+
+  /* smooth scroll fallback */
+  html{scroll-behavior:smooth}
+
+  /* theme-toggle icon-btn */
+  .icon-btn{
+    width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);border-radius:7px;background:var(--bg-2);color:var(--fg-2);
+    cursor:pointer;transition:border-color .15s,background .15s;
+  }
+  .icon-btn:hover{border-color:var(--line-2);background:var(--hover)}
+  .icon-btn svg{width:14px;height:14px}
+</style>
+
+<script type="application/json" id="edit-mode-defaults">
+</script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react" src="tweaks-panel.jsx"></script>
+<script type="text/babel" data-presets="env,react">
+// ─── Tweaks defaults ───────────────────────────────────────────────
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "auto",
+  "accent": "#00d76a",
+  "font": "plex",
+  "density": "compact",
+  "fxMode": "magnet",
+  "fxSize": 520,
+  "fxIntensity": 0.08,
+  "fxTrail": 0.24
+}/*EDITMODE-END*/;
+
+// ─── Content ───────────────────────────────────────────────────────
+const DATA = {
+  name: "Suraj Kushwaha",
+  handle: "surajkuushwaha",
+  initials: "SK",
+  role: "SDE II",
+  tagline: "Backend Architect · Agentic AI Systems at Scale",
+  email: "work@surajkuushwaha.com",
+  links: {
+    github:   "https://github.com/surajkuushwaha",
+    linkedin: "https://www.linkedin.com/in/surajkuushwaha/",
+    x:        "https://x.com/surajkuushwaha",
+    site:     "https://www.surajkuushwaha.com",
+  },
+  stats: [
+    { v:"50", u:"M+", l:"Weekly requests handled",
+      cap:"That's roughly 80 requests every second — at all hours, for every brand on the platform.",
+      hero:true, ic:"pulse" },
+    { v:"200", u:"+", l:"Enterprise brands served",
+      cap:"From a single MVP to 200+ paying companies — scaled without re-platforming.",
+      ic:"brands" },
+    { v:"0", u:"", l:"Production downtime",
+      cap:"30+ database migrations, zero customer impact. Reliability you can quote in a contract.",
+      ic:"shield" },
+    { v:"4", u:"yrs", l:"Shipping in production",
+      cap:"Day-0 engineer at a venture-backed SaaS — ownership from first commit to today.",
+      ic:"calendar" },
+    { v:"₹", u:"", l:"Revenue-critical systems",
+      cap:"Built the billing, reporting, and onboarding pipelines that every customer touches daily.",
+      ic:"trend" },
+  ],
+  about: [
+    "SDE II at an <a href='https://www.iima.ac.in/' target='_blank' rel='noreferrer'>IIM Ahmedabad</a>-funded B2B SaaS startup. Joined at Day 0, scaled it from a single MVP to 200+ brands processing 50M+ weekly requests. 30+ enterprise database migrations. Zero downtime.",
+    "Now building Agentic AI workflows with <a href='https://www.langchain.com/langgraph' target='_blank' rel='noreferrer'>LangGraph</a>. My goal: bridge the gap between <code>50M</code> and <code>1B</code> requests.",
+  ],
+  now: [
+    "Designing deterministic tool-calling for No-Touch Negotiation agents.",
+    "Writing a Go service (Clipscript) that converts short-form video URLs to transcripts.",
+    "Studying distributed tracing across multi-tenant event pipelines.",
+  ],
+  skills: [
+    { cat:"Backend",       ic:"server",  human:"The code that powers every request",
+      years:"4y", items:["Node.js","Express","TypeScript","Go","Core Java","Zod"], star:["TypeScript","Node.js"] },
+    { cat:"Cloud & Infra", ic:"cloud",   human:"Keeping things online, fast, everywhere",
+      years:"4y", items:["AWS","Lambda","SNS","SQS","EventBridge","Docker","CI/CD","Linux"], star:["AWS"] },
+    { cat:"AI / ML",       ic:"spark",   human:"Building agents that think before they act",
+      years:"1y", items:["LangGraph","Agentic AI","LLM Orchestration","Tool-Calling"], star:["LangGraph"] },
+    { cat:"Databases",     ic:"db",      human:"Storing data safely across 200+ tenants",
+      years:"4y", items:["MySQL","PostgreSQL","MongoDB","Sequelize"] },
+    { cat:"Observability", ic:"gauge",   human:"Knowing what broke before customers do",
+      years:"3y", items:["Prometheus","Grafana","Loki","Winston","PostHog"] },
+    { cat:"Frontend",      ic:"browser", human:"When a feature needs a UI, I ship one",
+      years:"2y", items:["React","Next.js","TailwindCSS"] },
+  ],
+  jobs: [
+    {
+      co: "CultureX Entertainment",
+      url: "https://www.culturex.ai",
+      when: "Jul 2022 — Present",
+      roles: [
+        { title:"SDE II",  span:"Dec 2024 — Present", note:"current" },
+        { title:"SDE I",   span:"Jul 2022 — Dec 2024", note:"2.5 yrs" },
+      ],
+      bullets: [
+        "Joined at <b>Day 0</b> and grew with the company — from single MVP to <b>200+ enterprise brands</b> processing <b>50M+ weekly requests</b> on AWS (EC2, Lambda, SQS, SNS, EventBridge).",
+        "Architected the Campaign Report engine tracking and generating reports for <b>50,000+ posts/day</b> with real-time delivery for 200+ brands.",
+        "Led <b>zero-downtime migration</b> of 30+ enterprise database environments into a unified, multi-tenant SaaS architecture.",
+        "Reduced client onboarding from days to minutes via automated domain provisioning and UI whitelabeling.",
+        "Built event-driven automation using EventBridge, SNS/SQS, and Lambda for real-time brand monitoring and cron workflows.",
+        "Shifted the codebase from JavaScript to strict TypeScript with Zod validation, eliminating runtime crashes.",
+        "Built Agentic AI workflows for No-Touch Negotiation using LangGraph with deterministic tool-calling and LLM orchestration.",
+        "Implemented full observability with Prometheus, Grafana, and Loki for monitoring and alerting.",
+      ],
+    },
+  ],
+  projects: [
+    {
+      name: "Clipscript",
+      when: "Apr 2026 — Present",
+      url: "https://github.com/surajkuushwaha/clipscript",
+      desc: "HTTP API that converts Instagram Reels and YouTube Shorts URLs into text transcripts. A Go Fiber service validates links, extracts audio with yt-dlp, streams it to Whisper (go-whisper in Docker or OpenAI), and returns transcripts with optional proxy pooling.",
+      stack: ["Go","Fiber","Docker","yt-dlp","Whisper"],
+      status: "active",
+    },
+    {
+      name: "Open Read",
+      when: "Jan 2025 — Feb 2025",
+      url: "https://github.com/surajkuushwaha/open-read",
+      desc: "A Chrome extension that lets you read articles and blogs across the web without signing up or logging in. Built for the open, frictionless web.",
+      stack: ["TypeScript","Plasmo","React"],
+      status: "shipped",
+    },
+  ],
+  education: [
+    { school: "Government Engineering College, Modasa", deg: "B.Tech, Computer Engineering · GTU", when: "2019 — 2022" },
+    { school: "Ranchhodlal Chhotalal Technical Institute", deg: "Diploma, Computer Engineering · GTU", when: "2016 — 2019" },
+  ],
+};
+
+// ─── Hooks / utilities ─────────────────────────────────────────────
+function useSystemTheme(){
+  const [sys, setSys] = React.useState(() =>
+    typeof window!=='undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  React.useEffect(()=>{
+    const m = window.matchMedia('(prefers-color-scheme: dark)');
+    const h = e => setSys(e.matches ? 'dark' : 'light');
+    m.addEventListener('change', h);
+    return ()=>m.removeEventListener('change', h);
+  },[]);
+  return sys;
+}
+
+function useReveal(){
+  React.useEffect(()=>{
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver(es=>{
+      es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{ threshold:.08, rootMargin:'0px 0px -40px 0px' });
+    els.forEach(el=>io.observe(el));
+    return ()=>io.disconnect();
+  },[]);
+}
+
+// Terminal pointer-tracked glow: sets --mx/--my on each .term element
+function useTermPointer(){
+  React.useEffect(()=>{
+    const onMove = (e) => {
+      document.querySelectorAll('.term').forEach(el=>{
+        const r = el.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        el.style.setProperty('--mx', x+'px');
+        el.style.setProperty('--my', y+'px');
+      });
+    };
+    window.addEventListener('pointermove', onMove);
+    return ()=>window.removeEventListener('pointermove', onMove);
+  },[]);
+}
+
+// Cursor FX — multi-mode
+function CursorFX({mode='glow', size=520, intensity=.22, trail=.12}){
+  const rootRef = React.useRef(null);
+  const glowRef = React.useRef(null);
+  const auroraRef = React.useRef(null);
+  const spotRef = React.useRef(null);
+  const crossRef = React.useRef(null);
+  const canvasRef = React.useRef(null);
+  const [ripples, setRipples] = React.useState([]);
+  const trailCount = 12;
+  const trailRefs = React.useRef([]);
+
+  // write size/intensity/trail as CSS vars on the root
+  React.useEffect(()=>{
+    const r = rootRef.current; if(!r) return;
+    r.style.setProperty('--fx-size', size+'px');
+    r.style.setProperty('--fx-intensity', intensity);
+    r.style.setProperty('--fx-trail', trail);
+  },[size,intensity,trail]);
+
+  // pointer tracking + per-mode animation
+  React.useEffect(()=>{
+    if(mode === 'off') return;
+    let raf=0;
+    let x=innerWidth/2, y=innerHeight/2, tx=x, ty=y;
+    // trail history
+    const history = Array.from({length: trailCount}, ()=>({x, y}));
+
+    const onMove = e => { tx=e.clientX; ty=e.clientY; };
+    const onClick = e => {
+      if(mode !== 'ripple') return;
+      const id = Math.random().toString(36).slice(2);
+      setRipples(rs => [...rs, {id, x:e.clientX, y:e.clientY}]);
+      setTimeout(()=> setRipples(rs => rs.filter(r => r.id !== id)), 900);
+    };
+
+    const tick = () => {
+      const ease = Math.max(.02, Math.min(.5, trail));
+      x += (tx-x)*ease; y += (ty-y)*ease;
+
+      if(mode === 'glow' && glowRef.current){
+        glowRef.current.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`;
+      }
+      if(mode === 'aurora' && auroraRef.current){
+        auroraRef.current.style.left = x+'px';
+        auroraRef.current.style.top = y+'px';
+      }
+      if(mode === 'spotlight' && spotRef.current){
+        spotRef.current.style.setProperty('--fx-x', x+'px');
+        spotRef.current.style.setProperty('--fx-y', y+'px');
+      }
+      if(mode === 'crosshair' && crossRef.current){
+        crossRef.current.style.setProperty('--fx-x', x+'px');
+        crossRef.current.style.setProperty('--fx-y', y+'px');
+      }
+      if(mode === 'trail'){
+        // shift history
+        history.unshift({x, y});
+        history.length = trailCount;
+        trailRefs.current.forEach((el, i) => {
+          if(!el) return;
+          const p = history[i] || {x,y};
+          const o = (1 - i/trailCount) * 0.9;
+          const s = 1 - (i/trailCount)*0.7;
+          el.style.transform = `translate(${p.x}px,${p.y}px) translate(-50%,-50%) scale(${s})`;
+          el.style.setProperty('--o', o);
+        });
+      }
+      if(mode === 'magnet' && canvasRef.current){
+        drawMagnet(canvasRef.current, x, y, intensity);
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerdown', onClick);
+    raf = requestAnimationFrame(tick);
+
+    // magnet canvas setup
+    let onResize = null;
+    if(mode === 'magnet' && canvasRef.current){
+      const c = canvasRef.current;
+      onResize = () => {
+        c.width = innerWidth * devicePixelRatio;
+        c.height = innerHeight * devicePixelRatio;
+        c.style.width = innerWidth+'px';
+        c.style.height = innerHeight+'px';
+      };
+      onResize();
+      window.addEventListener('resize', onResize);
+    }
+
+    return ()=>{
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerdown', onClick);
+      if(onResize) window.removeEventListener('resize', onResize);
+      cancelAnimationFrame(raf);
+    };
+  },[mode, trail, intensity]);
+
+  if(mode === 'off') return null;
+
+  return (
+    <div ref={rootRef} className="fx-root" aria-hidden="true">
+      {mode === 'glow' && <div ref={glowRef} className="cursor-glow"/>}
+      {mode === 'aurora' && <div ref={auroraRef} className="cursor-aurora"/>}
+      {mode === 'spotlight' && <div ref={spotRef} className="cursor-spot"/>}
+      {mode === 'crosshair' && <div ref={crossRef} className="cursor-crosshair"/>}
+      {mode === 'trail' && Array.from({length: trailCount}).map((_,i)=>(
+        <div key={i} ref={el => trailRefs.current[i] = el} className="cursor-trail-dot"/>
+      ))}
+      {mode === 'magnet' && <canvas ref={canvasRef} className="cursor-magnet-canvas"/>}
+      {mode === 'ripple' && <>
+        <div ref={glowRef} className="cursor-glow"/>
+        {ripples.map(r => (
+          <div key={r.id} className="cursor-ripple" style={{left:r.x+'px', top:r.y+'px'}}/>
+        ))}
+      </>}
+    </div>
+  );
+}
+
+// magnet field — dots drawn on canvas, each tugged toward cursor
+const magnetField = (() => {
+  let pts = null;
+  function ensure(w, h){
+    if(pts && pts._w === w && pts._h === h) return pts;
+    const gap = 64 * devicePixelRatio;
+    const out = [];
+    for(let y = gap/2; y < h; y += gap){
+      for(let x = gap/2; x < w; x += gap){
+        out.push({x, y, bx:x, by:y});
+      }
+    }
+    out._w = w; out._h = h;
+    return pts = out;
+  }
+  return { ensure };
+})();
+function drawMagnet(canvas, mx, my, intensity){
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height, dpr = devicePixelRatio;
+  ctx.clearRect(0,0,w,h);
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#0070f3';
+  ctx.fillStyle = accent;
+  const pts = magnetField.ensure(w, h);
+  const mxp = mx * dpr, myp = my * dpr;
+  const R = 200 * dpr;
+  for(const p of pts){
+    const dx = mxp - p.bx, dy = myp - p.by;
+    const d = Math.hypot(dx, dy);
+    const pull = d < R ? (1 - d/R) * 24 * dpr * (0.5 + intensity) : 0;
+    const ux = d ? dx/d : 0, uy = d ? dy/d : 0;
+    p.x = p.bx + ux * pull;
+    p.y = p.by + uy * pull;
+    const alpha = d < R ? 0.2 + (1 - d/R) * 0.8 : 0.15;
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 1.5 * dpr, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ─── Skill icons ───────────────────────────────────────────────────
+function SkillIcon({kind}){
+  const p = { fill:"none", stroke:"currentColor", strokeLinecap:"round", strokeLinejoin:"round" };
+  switch(kind){
+    case "server":  return <svg viewBox="0 0 24 24" {...p}><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>;
+    case "cloud":   return <svg viewBox="0 0 24 24" {...p}><path d="M7 18a5 5 0 0 1 .5-9.97 6 6 0 0 1 11.5 2A4 4 0 0 1 18 18z"/></svg>;
+    case "spark":   return <svg viewBox="0 0 24 24" {...p}><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg>;
+    case "db":      return <svg viewBox="0 0 24 24" {...p}><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg>;
+    case "gauge":   return <svg viewBox="0 0 24 24" {...p}><path d="M12 14l4-4"/><path d="M20 12a8 8 0 1 0-13.5 5.8"/><path d="M4 18h16"/></svg>;
+    case "browser": return <svg viewBox="0 0 24 24" {...p}><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg>;
+    default:        return <svg viewBox="0 0 24 24" {...p}><circle cx="12" cy="12" r="8"/></svg>;
+  }
+}
+
+// ─── Stat icons ────────────────────────────────────────────────────
+function StatIcon({kind}){
+  const p = { fill:"none", stroke:"currentColor", strokeLinecap:"round", strokeLinejoin:"round" };
+  switch(kind){
+    case "pulse":    return <svg viewBox="0 0 24 24" {...p}><path d="M3 12h4l2-6 4 12 2-6h6"/></svg>;
+    case "brands":   return <svg viewBox="0 0 24 24" {...p}><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6h6v6"/><path d="M3 21h18"/></svg>;
+    case "shield":   return <svg viewBox="0 0 24 24" {...p}><path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6l8-3z"/><path d="m9 12 2 2 4-4"/></svg>;
+    case "calendar": return <svg viewBox="0 0 24 24" {...p}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>;
+    case "trend":    return <svg viewBox="0 0 24 24" {...p}><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>;
+    default:         return <svg viewBox="0 0 24 24" {...p}><circle cx="12" cy="12" r="8"/></svg>;
+  }
+}
+
+// ─── Terminal typing hero ──────────────────────────────────────────
+function Terminal(){
+  // Each row pairs a dev-friendly CLI line with a plain-English gloss.
+  // Devs get the terminal aesthetic; non-devs get instant context on the right.
+  const lines = React.useMemo(()=>[
+    { cmd:'whoami',        gloss:'who am I' },
+    { out:<><span className="val">suraj kushwaha</span> — sde ii, 4 yrs in backend</> },
+    { cmd:'cat role.txt',  gloss:'what I do' },
+    { out:<>backend architect · building <span className="val">agentic AI</span> systems at scale</> },
+    { cmd:'uptime --prod', gloss:'what I\'ve shipped' },
+    { out:<><span className="ok">●</span> <span className="val">200+ brands</span> · <span className="val">50M+ requests / week</span> · <span className="val">0 downtime</span> since day 0</> },
+    { cmd:'open /portfolio', gloss:'scroll to read more ↓' },
+  ],[]);
+  const [step, setStep]   = React.useState(0);
+  const [typed, setTyped] = React.useState('');
+  const [done, setDone]   = React.useState(false);
+  const [plain, setPlain] = React.useState(false); // "plain english" toggle
+
+  React.useEffect(()=>{
+    if (step >= lines.length) { setDone(true); return; }
+    const ln = lines[step];
+    if (ln.cmd === undefined) {
+      const t = setTimeout(()=>{ setStep(s=>s+1); setTyped(''); }, 280);
+      return ()=>clearTimeout(t);
+    }
+    if (typed.length < ln.cmd.length) {
+      const t = setTimeout(()=>setTyped(ln.cmd.slice(0, typed.length+1)), 28 + Math.random()*40);
+      return ()=>clearTimeout(t);
+    } else {
+      const t = setTimeout(()=>{ setStep(s=>s+1); setTyped(''); }, 320);
+      return ()=>clearTimeout(t);
+    }
+  }, [step, typed, lines]);
+
+  return (
+    <div className="term">
+      <div className="gloss" aria-hidden="true"/>
+      <div className="noise" aria-hidden="true"/>
+      <div className="term-head">
+        <div className="dots"><span/><span/><span/></div>
+        <span className="ttl">~/suraj — zsh</span>
+        <button className="lang" onClick={()=>setPlain(p=>!p)} title="Toggle plain-English view">
+          <span className="sw"/>{plain ? 'terminal' : 'plain english'}
+        </button>
+      </div>
+      <div className="term-body term-body-pad">
+        {lines.slice(0, step).map((ln,i)=>(
+          <div className="term-row" key={i}>
+            <div>
+              {ln.cmd !== undefined
+                ? <><span className="prompt">{'$ '}</span><span className="cmd">{ln.cmd}</span></>
+                : <span className="dim">{ln.out}</span>}
+            </div>
+            {ln.gloss && <div className="gloss">{ln.gloss}</div>}
+          </div>
+        ))}
+        {step < lines.length && lines[step].cmd !== undefined && (
+          <div className="term-row">
+            <div>
+              <span className="prompt">{'$ '}</span>
+              <span className="cmd">{typed}</span>
+              <span className="cursor" />
+            </div>
+            <div className="gloss">{lines[step].gloss}</div>
+          </div>
+        )}
+        {done && (
+          <div className="term-row">
+            <div>
+              <span className="prompt">{'$ '}</span>
+              <span className="cursor" />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Command palette ───────────────────────────────────────────────
+function CommandPalette({ open, onClose, onTheme, onCopyEmail }){
+  const [q, setQ] = React.useState('');
+  const [idx, setIdx] = React.useState(0);
+  const inputRef = React.useRef(null);
+
+  const items = React.useMemo(()=>[
+    { group:'Navigate', label:'Go to About',      hint:'g a', act:()=>scrollTo('about') },
+    { group:'Navigate', label:'Go to Skills',     hint:'g s', act:()=>scrollTo('skills') },
+    { group:'Navigate', label:'Go to Experience', hint:'g e', act:()=>scrollTo('experience') },
+    { group:'Navigate', label:'Go to Projects',   hint:'g p', act:()=>scrollTo('projects') },
+    { group:'Navigate', label:'Go to Now',        hint:'g n', act:()=>scrollTo('now') },
+    { group:'Navigate', label:'Go to Contact',    hint:'g c', act:()=>scrollTo('contact') },
+    { group:'Actions',  label:'Toggle theme',          hint:'⇧ T', act:onTheme },
+    { group:'Actions',  label:'Copy email',            hint:'⇧ C', act:onCopyEmail },
+    { group:'Actions',  label:'View source on GitHub', hint:'↗',   act:()=>window.open(DATA.links.github,'_blank') },
+    { group:'Links',    label:'GitHub',   hint:'↗', act:()=>window.open(DATA.links.github,'_blank') },
+    { group:'Links',    label:'LinkedIn', hint:'↗', act:()=>window.open(DATA.links.linkedin,'_blank') },
+    { group:'Links',    label:'X',        hint:'↗', act:()=>window.open(DATA.links.x,'_blank') },
+    { group:'Links',    label:'Email',    hint:'↗', act:()=>{ location.href='mailto:'+DATA.email; } },
+  ],[onTheme,onCopyEmail]);
+
+  const filtered = React.useMemo(()=>{
+    const s = q.trim().toLowerCase();
+    if(!s) return items;
+    return items.filter(i => i.label.toLowerCase().includes(s) || i.group.toLowerCase().includes(s));
+  },[q,items]);
+
+  React.useEffect(()=>{
+    if(open){ setQ(''); setIdx(0); setTimeout(()=>inputRef.current?.focus(), 20); }
+  },[open]);
+
+  React.useEffect(()=>{ setIdx(0); },[q]);
+
+  const doAct = (i) => { filtered[i]?.act(); onClose(); };
+
+  if(!open) return null;
+
+  // group
+  const groups = {};
+  filtered.forEach(it=>{ (groups[it.group]=groups[it.group]||[]).push(it); });
+  const flat = filtered;
+
+  return (
+    <div className="cmdk-veil" onMouseDown={onClose}>
+      <div className="cmdk" onMouseDown={e=>e.stopPropagation()}>
+        <input
+          ref={inputRef} value={q}
+          onChange={e=>setQ(e.target.value)}
+          placeholder="Type a command or search…"
+          onKeyDown={e=>{
+            if(e.key==='Escape') onClose();
+            else if(e.key==='ArrowDown'){ e.preventDefault(); setIdx(i=>Math.min(i+1, flat.length-1)); }
+            else if(e.key==='ArrowUp'){   e.preventDefault(); setIdx(i=>Math.max(i-1, 0)); }
+            else if(e.key==='Enter'){     e.preventDefault(); doAct(idx); }
+          }}
+        />
+        <div className="cmdk-list">
+          {Object.entries(groups).map(([g,its])=>(
+            <div className="cmdk-group" key={g}>
+              <div className="cmdk-group-h">{g}</div>
+              {its.map(it=>{
+                const fi = flat.indexOf(it);
+                return (
+                  <div key={it.label}
+                    className={"cmdk-item"+(fi===idx?' active':'')}
+                    onMouseEnter={()=>setIdx(fi)}
+                    onClick={()=>doAct(fi)}>
+                    <span className="ic">›</span>
+                    <span>{it.label}</span>
+                    <span className="hint">{it.hint}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+          {flat.length===0 && <div style={{padding:'18px 12px',fontFamily:'var(--mono)',fontSize:13,color:'var(--muted)'}}>No results.</div>}
+        </div>
+        <div className="cmdk-foot">
+          <span><kbd>↑</kbd><kbd>↓</kbd> navigate <kbd>↵</kbd> select</span>
+          <span><kbd>esc</kbd> close</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function scrollTo(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.scrollIntoView({ behavior:'smooth', block:'start' });
+  el.classList.add('sec-flash');
+  setTimeout(()=>el.classList.remove('sec-flash'), 900);
+}
+
+// ─── Theme toggle icon ─────────────────────────────────────────────
+function ThemeIcon({dark}){
+  return dark ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  ) : (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  );
+}
+
+// ─── Main app ──────────────────────────────────────────────────────
+function App(){
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const sys = useSystemTheme();
+  const [scrolled, setScrolled] = React.useState(false);
+  const [cmdOpen, setCmdOpen] = React.useState(false);
+  const [toast, setToast] = React.useState(null);
+  const [active, setActive] = React.useState('about');
+
+  // apply theme (auto follows system)
+  const effectiveTheme = t.theme === 'auto' ? sys : t.theme;
+  React.useEffect(()=>{
+    document.documentElement.setAttribute('data-theme', effectiveTheme);
+  },[effectiveTheme]);
+
+  // apply accent + font family + density
+  React.useEffect(()=>{
+    document.documentElement.style.setProperty('--accent', t.accent);
+    const map = { plex:"'IBM Plex Sans'", inter:"'Inter'", system:"ui-sans-serif, system-ui", serifDisplay:"'IBM Plex Sans'" };
+    document.documentElement.style.setProperty('--sans', `${map[t.font]||"'IBM Plex Sans'"},ui-sans-serif,system-ui,-apple-system,sans-serif`);
+  },[t.accent, t.font]);
+
+  // sticky header state
+  React.useEffect(()=>{
+    const h = () => setScrolled(window.scrollY > 20);
+    h(); window.addEventListener('scroll', h, { passive:true });
+    return ()=>window.removeEventListener('scroll', h);
+  },[]);
+
+  // active section indicator via IO
+  React.useEffect(()=>{
+    const ids = ['about','skills','experience','projects','now','writing','education','contact'];
+    const io = new IntersectionObserver(es=>{
+      es.forEach(e=>{ if(e.isIntersecting) setActive(e.target.id); });
+    },{ rootMargin:'-40% 0px -55% 0px', threshold:0 });
+    ids.forEach(id => { const el=document.getElementById(id); if(el) io.observe(el); });
+    return ()=>io.disconnect();
+  },[]);
+
+  useReveal();
+  useTermPointer();
+
+  const flash = (msg, ok=true) => {
+    setToast({ msg, ok }); setTimeout(()=>setToast(null), 1700);
+  };
+  const copyEmail = async () => {
+    try { await navigator.clipboard.writeText(DATA.email); flash('Email copied'); }
+    catch { flash('Copy failed', false); }
+  };
+  const toggleTheme = () => {
+    const next = effectiveTheme === 'dark' ? 'light' : 'dark';
+    setTweak('theme', next);
+  };
+
+  // keyboard shortcuts
+  React.useEffect(()=>{
+    let gKey = 0;
+    const onKey = (e) => {
+      const meta = e.metaKey || e.ctrlKey;
+      const tag = (e.target.tagName||'').toLowerCase();
+      const typing = tag==='input' || tag==='textarea' || e.target.isContentEditable;
+
+      if (meta && e.key.toLowerCase()==='k') { e.preventDefault(); setCmdOpen(o=>!o); return; }
+      if (typing) return;
+
+      if (e.key==='Escape') { setCmdOpen(false); return; }
+      if (e.key==='?')      { e.preventDefault(); setCmdOpen(true); return; }
+
+      // g leader
+      if (e.key.toLowerCase()==='g' && !meta) {
+        gKey = Date.now();
+        return;
+      }
+      if (gKey && Date.now() - gKey < 1200 && !meta) {
+        const map = { a:'about', s:'skills', e:'experience', p:'projects', n:'now', w:'writing', c:'contact', h:'top' };
+        const target = map[e.key.toLowerCase()];
+        if (target) {
+          e.preventDefault();
+          if (target==='top') { document.getElementById('top')?.scrollIntoView({behavior:'smooth',block:'start'}); }
+          else scrollTo(target);
+          gKey = 0;
+          return;
+        }
+      }
+      // shift shortcuts
+      if (e.shiftKey && !meta) {
+        if (e.key.toLowerCase()==='t') { e.preventDefault(); toggleTheme(); }
+        else if (e.key.toLowerCase()==='c') { e.preventDefault(); copyEmail(); }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return ()=>window.removeEventListener('keydown', onKey);
+  },[effectiveTheme]);
+
+  const navItems = [
+    ['about','about'],['skills','stack'],['experience','work'],['projects','projects'],['now','now'],['contact','contact']
+  ];
+
+  const ACCENTS = ['#00d76a','#0070f3','#f97316','#a78bfa','#f43f5e','#ffffff'];
+
+  return (
+    <>
+      <CursorFX mode={t.fxMode} size={t.fxSize} intensity={t.fxIntensity} trail={t.fxTrail}/>
+
+      <div className={"app "+(t.density==='compact'?'dense':'')} data-screen-label="Portfolio">
+
+        {/* top bar */}
+        <div className={"topbar"+(scrolled?' scrolled':'')}>
+          <a href="#top" className="brand">
+            {DATA.handle}<span className="dot">_</span>
+          </a>
+          <nav>
+            {navItems.map(([id,label])=>(
+              <a key={id} href={"#"+id}
+                className={active===id?'active':''}
+                onClick={e=>{e.preventDefault();scrollTo(id);}}>
+                {label}
+              </a>
+            ))}
+            <button className="k" onClick={()=>setCmdOpen(true)} title="Command palette">
+              <span>⌘K</span>
+            </button>
+            <button className="icon-btn" onClick={toggleTheme} title="Toggle theme (⇧T)" style={{marginLeft:4}}>
+              <ThemeIcon dark={effectiveTheme==='dark'}/>
+            </button>
+          </nav>
+        </div>
+
+        {/* hero */}
+        <div className="hero" id="top">
+          <Terminal/>
+          <div className="name-block reveal">
+            <div>
+              <h1>{DATA.name}</h1>
+              <p className="role">
+                <b>{DATA.role}</b>
+                <span className="sep">·</span>Backend Architect
+                <span className="sep">·</span>Agentic AI
+                <span className="sep">·</span>Bengaluru
+              </p>
+              <div className="status"><span className="blip"/>available for interesting problems</div>
+            </div>
+            <div className="avatar">{DATA.initials}</div>
+          </div>
+        </div>
+
+        {/* stats */}
+        <section id="about" className="reveal">
+          <div className="sec-h">
+            <span className="n">01</span>
+            <h2>About</h2>
+            <div className="spacer"/>
+            <span className="meta">the tl;dr</span>
+          </div>
+
+          <div className="stats">
+            {DATA.stats.map((s,i)=>(
+              <div className={"stat"+(s.hero?' hero-stat':'')} key={i}>
+                <div className="ic"><StatIcon kind={s.ic}/></div>
+                <div className="body">
+                  <div className="row">
+                    <div className="v">{s.v}<span className="u">{s.u}</span></div>
+                    <div className="l">{s.l}</div>
+                  </div>
+                  <div className="cap">{s.cap}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="prose">
+            {DATA.about.map((p,i)=><p key={i} dangerouslySetInnerHTML={{__html:p}}/>)}
+          </div>
+        </section>
+
+        {/* skills */}
+        <section id="skills" className="reveal">
+          <div className="sec-h">
+            <span className="n">02</span>
+            <h2>Stack</h2>
+            <div className="spacer"/>
+            <span className="meta">tools I reach for</span>
+          </div>
+          <div className="skills">
+            {DATA.skills.map((s,idx)=>(
+              <div className={"skill-card"+(idx===0?' wide':'')} key={s.cat}>
+                <div className="skill-head">
+                  <div className="skill-ic"><SkillIcon kind={s.ic}/></div>
+                  <div className="skill-title">
+                    <div className="t">{s.cat}</div>
+                    <div className="h">{s.human}</div>
+                  </div>
+                  <div className="skill-yrs"><b>{s.years}</b></div>
+                </div>
+                <div className="skill-tags">
+                  {s.items.map(it => (
+                    <span key={it} className={s.star && s.star.includes(it)?'star':''}>{it}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* experience */}
+        <section id="experience" className="reveal">
+          <div className="sec-h">
+            <span className="n">03</span>
+            <h2>Work</h2>
+            <div className="spacer"/>
+            <span className="meta">4+ years</span>
+          </div>
+          {DATA.jobs.map((j,i)=>(
+            <div className="job" key={i}>
+              <div className="job-h">
+                <div className="co"><a href={j.url} target="_blank" rel="noreferrer">{j.co} ↗</a></div>
+                <div className="when">{j.when}</div>
+              </div>
+              {j.roles ? (
+                <div className="role-timeline">
+                  {j.roles.map((r,k)=>(
+                    <div className="role-step" key={k}>
+                      <div className="role-dot" aria-hidden="true"/>
+                      <div className="role-body">
+                        <div className="role-title">{r.title}
+                          {r.note && <span className="role-note">{r.note}</span>}
+                        </div>
+                        <div className="role-span">{r.span}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="role">{j.role}</p>
+              )}
+              <ul>
+                {j.bullets.map((b,k)=><li key={k} dangerouslySetInnerHTML={{__html:b}}/>)}
+              </ul>
+            </div>
+          ))}
+        </section>
+
+        {/* projects */}
+        <section id="projects" className="reveal">
+          <div className="sec-h">
+            <span className="n">04</span>
+            <h2>Projects</h2>
+            <div className="spacer"/>
+            <span className="meta">things I shipped</span>
+          </div>
+          <div className="projects">
+            {DATA.projects.map((p,i)=>(
+              <div className="project" key={i}>
+                <div>
+                  <div className="p-h">
+                    <h3><a href={p.url} target="_blank" rel="noreferrer">{p.name}</a></h3>
+                    <span className="date">{p.when}</span>
+                  </div>
+                  <p className="desc">{p.desc}</p>
+                  <div className="stack">
+                    {p.stack.map(s=><span key={s}>{s}</span>)}
+                  </div>
+                </div>
+                <div className="aside">
+                  {p.status==='active' ? '● active' : '○ shipped'}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* now */}
+        <section id="now" className="reveal">
+          <div className="sec-h">
+            <span className="n">05</span>
+            <h2>Now</h2>
+            <div className="spacer"/>
+            <span className="meta">this week</span>
+          </div>
+          <ul className="job" style={{listStyle:'none',padding:0,margin:0}}>
+            {DATA.now.map((n,i)=>(
+              <li key={i} style={{fontSize:14,lineHeight:1.65,color:'var(--fg-2)',paddingLeft:18,position:'relative',marginBottom:8}}>
+                <span style={{position:'absolute',left:0,top:9,width:6,height:6,borderRadius:'50%',background:'var(--accent)'}}/>
+                {n}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* writing */}
+        <section id="writing" className="reveal">
+          <div className="sec-h">
+            <span className="n">06</span>
+            <h2>Writing</h2>
+            <div className="spacer"/>
+            <span className="meta">coming soon</span>
+          </div>
+          <div className="writing-empty">drafting posts on multi-tenant migrations and agentic AI patterns · subscribe via <a href={"mailto:"+DATA.email} style={{textDecoration:'underline',textDecorationColor:'var(--line-2)',textUnderlineOffset:3}}>email</a></div>
+        </section>
+
+        {/* education */}
+        <section id="education" className="reveal">
+          <div className="sec-h">
+            <span className="n">07</span>
+            <h2>Education</h2>
+            <div className="spacer"/>
+          </div>
+          <div className="edu">
+            {DATA.education.map((e,i)=>(
+              <div className="edu-item" key={i}>
+                <div>
+                  <div className="school">{e.school}</div>
+                  <div className="deg">{e.deg}</div>
+                </div>
+                <div className="when">{e.when}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* contact */}
+        <section id="contact" className="reveal">
+          <div className="sec-h">
+            <span className="n">08</span>
+            <h2>Contact</h2>
+            <div className="spacer"/>
+          </div>
+          <div className="contact">
+            <div className="lead">Let's build something at scale.</div>
+            <div className="prose"><p>Always open to discussing high-scale systems, backend architecture, or AI engineering. Drop a note — I read every one.</p></div>
+            <div className="contact-row">
+              <div className="email-combo">
+                <a className="btn primary email-main" href={"mailto:"+DATA.email}>
+                  <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                  {DATA.email}
+                </a>
+                <button className="btn primary email-copy" onClick={copyEmail} title="Copy email (⇧C)" aria-label="Copy email address">
+                  <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                  <span className="k">⇧C</span>
+                </button>
+              </div>
+              <a className="btn" href={DATA.links.github} target="_blank" rel="noreferrer">
+                <svg className="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1.1 1.9 2.9 1.4 3.6 1 .1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+                github
+              </a>
+              <a className="btn" href={DATA.links.linkedin} target="_blank" rel="noreferrer">
+                <svg className="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1-.02 5.01A2.5 2.5 0 0 1 4.98 3.5zM3 9h4v12H3V9zm7 0h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21H18v-5.3c0-1.3 0-3-1.8-3S14 14 14 15.6V21h-4V9z"/></svg>
+                linkedin
+              </a>
+              <a className="btn" href={DATA.links.x} target="_blank" rel="noreferrer">
+                <svg className="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2H21l-6.52 7.45L22 22h-6.172l-4.833-6.29L5.4 22H2.64l6.98-7.97L2 2h6.32l4.37 5.77L18.244 2zm-1.083 18.01h1.525L7.01 3.88H5.374L17.16 20.01z"/></svg>
+                x
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <footer>
+          <span>© {new Date().getFullYear()} {DATA.name}. built in html.</span>
+          <span>
+            press <kbd style={{fontFamily:'var(--mono)',background:'var(--hover)',padding:'1px 5px',borderRadius:3,border:'1px solid var(--line)'}}>⌘K</kbd> or <kbd style={{fontFamily:'var(--mono)',background:'var(--hover)',padding:'1px 5px',borderRadius:3,border:'1px solid var(--line)'}}>?</kbd> anywhere
+          </span>
+        </footer>
+      </div>
+
+      {/* Command palette */}
+      <CommandPalette open={cmdOpen} onClose={()=>setCmdOpen(false)} onTheme={toggleTheme} onCopyEmail={copyEmail}/>
+
+      {/* Toast */}
+      {toast && (
+        <div className={"toast show"}>
+          <span className={toast.ok?'ok':''}>{toast.ok?'✓':'✕'}</span>
+          {toast.msg}
+        </div>
+      )}
+
+      {/* Tweaks */}
+      <TweaksPanel>
+        <TweakSection label="Theme"/>
+        <TweakRadio label="Mode" value={t.theme}
+          options={[{label:'auto',value:'auto'},{label:'light',value:'light'},{label:'dark',value:'dark'}]}
+          onChange={v=>setTweak('theme', v)}/>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:10}}>
+          <span style={{color:'rgba(41,38,27,.72)',fontWeight:500}}>Accent</span>
+          <div style={{display:'flex',gap:6}}>
+            {ACCENTS.map(c=>(
+              <button key={c} onClick={()=>setTweak('accent',c)}
+                style={{width:18,height:18,borderRadius:9,background:c,border:t.accent===c?'2px solid #000':'1px solid rgba(0,0,0,.15)',cursor:'pointer',padding:0}}
+                title={c}/>
+            ))}
+          </div>
+        </div>
+
+        <TweakSection label="Type"/>
+        <TweakRadio label="Font" value={t.font}
+          options={[{label:'plex',value:'plex'},{label:'inter',value:'inter'},{label:'system',value:'system'}]}
+          onChange={v=>setTweak('font', v)}/>
+
+        <TweakSection label="Layout"/>
+        <TweakRadio label="Density" value={t.density}
+          options={[{label:'compact',value:'compact'},{label:'regular',value:'regular'}]}
+          onChange={v=>setTweak('density', v)}/>
+
+        <TweakSection label="Cursor FX"/>
+        <TweakSelect label="Effect" value={t.fxMode}
+          options={[
+            {label:'✨ Glow',       value:'glow'},
+            {label:'🌈 Aurora',     value:'aurora'},
+            {label:'🔦 Spotlight',  value:'spotlight'},
+            {label:'💧 Trail',      value:'trail'},
+            {label:'✚ Crosshair',  value:'crosshair'},
+            {label:'⚡ Ripple',     value:'ripple'},
+            {label:'🦲 Magnet',     value:'magnet'},
+            {label:'✕ Off',         value:'off'},
+          ]}
+          onChange={v=>setTweak('fxMode', v)}/>
+        <TweakSlider label="Size" value={t.fxSize} min={120} max={1200} step={20}
+          onChange={v=>setTweak('fxSize', v)}/>
+        <TweakSlider label="Intensity" value={t.fxIntensity} min={0} max={1} step={.02}
+          onChange={v=>setTweak('fxIntensity', v)}/>
+        <TweakSlider label="Follow speed" value={t.fxTrail} min={.02} max={.5} step={.01}
+          onChange={v=>setTweak('fxTrail', v)}/>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
