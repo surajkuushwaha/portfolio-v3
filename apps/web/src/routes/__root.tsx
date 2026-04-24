@@ -2,11 +2,9 @@ import { Toaster } from "@portfolio-v2/ui/components/sonner";
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-import Header from "../components/header";
-
 import appCss from "../index.css?url";
 
-export interface RouterAppContext {}
+export type RouterAppContext = Record<string, never>;
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
   head: () => ({
@@ -19,7 +17,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "My App",
+        title: "Suraj Kushwaha — SDE II",
       },
     ],
     links: [
@@ -40,10 +38,7 @@ function RootDocument() {
         <HeadContent />
       </head>
       <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
-          <Outlet />
-        </div>
+        <Outlet />
         <Toaster richColors />
         <TanStackRouterDevtools position="bottom-left" />
         <Scripts />
