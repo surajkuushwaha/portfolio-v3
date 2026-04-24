@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-lyra",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@portfolio-v2/ui/components",
+    "utils": "@portfolio-v2/ui/lib/utils",
+    "hooks": "@portfolio-v2/ui/hooks",
+    "lib": "@portfolio-v2/ui/lib",
+    "ui": "@portfolio-v2/ui/components"
+  },
+  "menuColor": "default",
+  "menuAccent": "subtle",
+  "registries": {}
+}
