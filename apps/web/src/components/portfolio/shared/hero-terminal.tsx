@@ -16,7 +16,6 @@ export function HeroTerminal() {
   const [step, setStep]   = React.useState(0);
   const [typed, setTyped] = React.useState('');
   const [done, setDone]   = React.useState(false);
-  const [plain, setPlain] = React.useState(false);
   const [closeBlocked, setCloseBlocked] = React.useState(false);
 
   React.useEffect(() => {
@@ -55,9 +54,7 @@ export function HeroTerminal() {
           <span/>
         </div>
         <span className="ttl">~/suraj — zsh</span>
-        <button className="lang" onClick={() => setPlain(p => !p)} title="Toggle plain-English view">
-          <span className="sw"/>{plain ? 'terminal' : 'plain english'}
-        </button>
+        <span className="term-mode"><span className="sw"/>terminal</span>
       </div>
       <div className="term-body term-body-pad">
         {lines.slice(0, step).map((ln, i) => (
