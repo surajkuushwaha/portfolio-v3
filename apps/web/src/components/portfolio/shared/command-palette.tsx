@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as React from "react";
+import "@/styles/portfolio/command-palette.css";
 
 import { DATA } from "../portfolio-data";
 import { scrollToSection } from "./scroll-to";

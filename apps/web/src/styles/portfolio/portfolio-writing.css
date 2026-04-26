@@ -1,0 +1,6 @@
+/* writing */
+.writing-empty{padding:22px 20px;border:1px dashed var(--line-2);border-radius:10px;
+  font-family:var(--mono);font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px;
+  background:color-mix(in srgb,var(--bg-2) 88%,var(--bg));
+}
+.writing-empty::before{content:"";width:6px;height:6px;background:var(--muted-2);border-radius:50%}

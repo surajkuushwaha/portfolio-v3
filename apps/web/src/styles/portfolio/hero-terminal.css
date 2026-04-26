@@ -1,0 +1,128 @@
+/* hero-terminal */
+.term{
+  position:relative;
+  font-family:var(--mono);font-size:14px;line-height:1.7;
+  border:1px solid color-mix(in srgb,var(--line) 60%,transparent);
+  border-radius:14px;overflow:hidden;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--bg-2) 80%,transparent) 0%,
+      color-mix(in srgb,var(--bg-2) 92%,transparent) 100%);
+  backdrop-filter:blur(28px) saturate(120%);
+  -webkit-backdrop-filter:blur(28px) saturate(120%);
+  box-shadow:
+    0 1px 0 color-mix(in srgb,#fff 18%,transparent) inset,
+    0 -1px 0 color-mix(in srgb,#000 10%,transparent) inset,
+    0 1px 1px color-mix(in srgb,#fff 6%,transparent) inset,
+    0 20px 60px -20px rgba(0,0,0,.35),
+    0 8px 24px -12px rgba(0,0,0,.25);
+  transition:border-color .2s, box-shadow .2s;
+}
+.term > .gloss{
+  position:absolute;left:0;right:0;top:0;height:46%;pointer-events:none;z-index:0;
+  background:linear-gradient(180deg,
+    color-mix(in srgb,#fff 8%,transparent) 0%,
+    color-mix(in srgb,#fff 2%,transparent) 55%,
+    transparent 100%);
+  mix-blend-mode:screen;
+}
+.term > .noise{
+  position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.035;
+  background-image:radial-gradient(rgba(255,255,255,.9) 1px,transparent 1px);
+  background-size:3px 3px;
+  mix-blend-mode:overlay;
+}
+.term::before{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),
+    color-mix(in srgb,var(--accent) 12%,transparent) 0%,
+    color-mix(in srgb,var(--accent) 4%,transparent) 35%,
+    transparent 65%);
+  opacity:0;transition:opacity .2s;
+}
+.term:hover::before{opacity:1}
+.term::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  padding:1px;
+  background:radial-gradient(160px circle at var(--mx,50%) var(--my,50%),
+    color-mix(in srgb,var(--accent) 65%,transparent) 0%,transparent 70%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .2s;
+}
+.term:hover::after{opacity:.75}
+.term-head{display:flex;align-items:center;gap:10px;padding:11px 14px;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 50%,transparent);
+  font-size:11px;color:var(--muted);
+  position:relative;z-index:1;
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--bg-2) 25%,transparent) 0%,
+    color-mix(in srgb,var(--bg-2) 8%,transparent) 100%);
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 8%,transparent) inset;
+}
+.term-body{position:relative;z-index:1}
+.term-head .dots{display:flex;gap:8px;align-items:center}
+.term-head .dots span,
+.term-head .dots button{
+  appearance:none;border:0;padding:0;cursor:pointer;
+  width:12px;height:12px;border-radius:50%;
+  box-shadow:0 0 0 .5px rgba(0,0,0,.18) inset,
+             0 1px 1px rgba(255,255,255,.25) inset;
+}
+.term-head .dots button:nth-child(1){background:radial-gradient(circle at 35% 30%,#ff8177,#ff5f57 70%)}
+.term-head .dots button:nth-child(1):hover{filter:saturate(115%) brightness(1.05)}
+.term-head .dots button:nth-child(1):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.term-head .dots span:nth-child(2){background:radial-gradient(circle at 35% 30%,#ffd27a,#febc2e 70%)}
+.term-head .dots span:nth-child(3){background:radial-gradient(circle at 35% 30%,#5ae47f,#28c840 70%)}
+html[data-theme="light"] .term{
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,#fff 92%,transparent) 0%,
+      color-mix(in srgb,#fff 85%,transparent) 100%);
+  border-color:color-mix(in srgb,#000 10%,transparent);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.9) inset,
+    0 -1px 0 rgba(0,0,0,.05) inset,
+    0 20px 60px -24px rgba(0,0,0,.18),
+    0 8px 24px -14px rgba(0,0,0,.12);
+}
+html[data-theme="light"] .term > .gloss{mix-blend-mode:normal;opacity:.6;
+  background:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.15) 55%,transparent 100%);
+}
+html[data-theme="light"] .term > .noise{opacity:.02;mix-blend-mode:multiply}
+.term-head .ttl{margin-left:6px;font-family:var(--mono)}
+.term-head .term-mode{margin-left:auto;display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--mono);font-size:10px;color:var(--muted);
+  padding:2px 8px;border:1px solid var(--line);border-radius:999px;
+  background:var(--bg);text-transform:uppercase;letter-spacing:.06em;
+}
+.term-head .term-mode .sw{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.term-body-pad{padding:18px 18px 22px;min-height:250px}
+.term-row{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:baseline}
+@media (max-width:560px){
+  .term{font-size:13px;line-height:1.55;border-radius:12px}
+  .term-head{padding:9px 10px;gap:8px}
+  .term-head .dots{gap:7px}
+  .term-head .ttl{
+    max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .term-head .term-mode{padding:3px 8px;font-size:9px;letter-spacing:.04em;line-height:1.25;border-radius:999px}
+  .term-head .term-mode .sw{width:6px;height:6px;flex-shrink:0}
+  .term-body-pad{padding:16px 16px 18px;min-height:380px}
+  .term-row{grid-template-columns:1fr;gap:0}
+}
+.term-row .gloss{font-family:var(--sans);font-size:12px;color:var(--muted-2);
+  text-align:right;letter-spacing:-.005em;font-style:italic;white-space:nowrap;
+  opacity:.85;
+}
+@media (max-width:560px){.term-row .gloss{text-align:left;font-size:11px;margin-bottom:8px;padding-left:14px;border-left:2px solid var(--line)}}
+@media (max-width:430px){.term-body-pad{min-height:360px}}
+@media (max-width:380px){.term-body-pad{min-height:340px}}
+.term .prompt{color:var(--muted)}
+.term .cmd{color:var(--fg)}
+.term .ok{color:var(--accent)}
+.term .dim{color:var(--muted)}
+.term .val{color:var(--fg-2);font-weight:500}
+.term .cursor{display:inline-block;width:8px;height:16px;background:var(--accent);vertical-align:-3px;margin-left:2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}

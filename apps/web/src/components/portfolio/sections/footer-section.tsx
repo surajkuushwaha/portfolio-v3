@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { DATA } from "../portfolio-data";
+import "@/styles/portfolio/portfolio-footer.css";
 
 const KBD_STYLE = {
   fontFamily: 'var(--mono)',

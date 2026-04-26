@@ -1,0 +1,60 @@
+/* portfolio-hero */
+.hero{margin:40px 0 72px}
+@media (max-width:640px){.hero{margin:18px 0 42px}}
+
+.name-block{margin-top:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.name-block h1{font-family:var(--sans);font-size:34px;font-weight:600;letter-spacing:-.025em;margin:0 0 8px;line-height:1.1}
+.name-block .role{font-family:var(--mono);font-size:13px;color:var(--muted);margin:0;letter-spacing:-.01em}
+.name-block .role .sep{opacity:.4;margin:0 6px}
+.name-block .role b{color:var(--fg-2);font-weight:500}
+.avatar{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--fg);color:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-.02em;
+  flex-shrink:0;
+}
+
+.status{display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+  font-family:var(--mono);font-size:12px;color:var(--muted);
+  padding:4px 10px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:999px;
+  background:color-mix(in srgb,var(--bg-2) 50%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.status .blip{width:6px;height:6px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);
+  animation:blip 1.8s ease-out infinite;
+}
+@media (max-width:560px){
+  .name-block{
+    margin-top:20px;display:grid;grid-template-columns:1fr;
+    align-items:start;gap:10px;
+  }
+  .name-block h1{
+    font-size:clamp(38px, 11vw, 48px);
+    line-height:.98;margin-bottom:12px;letter-spacing:-.02em;
+  }
+  .name-block .role{
+    font-size:13px;line-height:1.55;max-width:28ch;
+  }
+  .name-block .role .sep{margin:0 5px}
+  .avatar{
+    display:none;
+  }
+  .status{
+    grid-column:1 / -1;margin-top:0;font-size:12px;line-height:1.3;
+    padding:7px 11px;max-width:100%;white-space:normal;
+    background:color-mix(in srgb,var(--bg-2) 82%,var(--bg));
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+  }
+}
+@media (max-width:380px){
+  .name-block{grid-template-columns:1fr;gap:12px}
+  .name-block h1{font-size:clamp(34px, 12vw, 42px)}
+  .name-block .role{max-width:100%}
+}
+@keyframes blip{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}
+  70%{box-shadow:0 0 0 8px transparent}
+  100%{box-shadow:0 0 0 0 transparent}
+}

@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { DATA } from "../portfolio-data";
+import "@/styles/portfolio/portfolio-sections-shared.css";
+import "@/styles/portfolio/portfolio-now.css";
 
 export function NowSection() {
   return (
@@ -10,10 +12,10 @@ export function NowSection() {
         <div className="spacer"/>
         <span className="meta">this week</span>
       </div>
-      <ul className="job" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+      <ul className="now-list">
         {DATA.now.map((n, i) => (
-          <li key={i} style={{ fontSize: 14, lineHeight: 1.65, color: 'var(--fg-2)', paddingLeft: 18, position: 'relative', marginBottom: 8 }}>
-            <span style={{ position: 'absolute', left: 0, top: 9, width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)' }}/>
+          <li key={i} className="now-item">
+            <span className="now-item-dot"/>
             {n}
           </li>
         ))}

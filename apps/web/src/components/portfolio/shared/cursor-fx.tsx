@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as React from "react";
+import "@/styles/portfolio/cursor-fx.css";
 
 // Cursor FX — multi-mode pointer overlay. Each mode renders its own
 // layer; the effect driver updates CSS vars / transforms per frame.

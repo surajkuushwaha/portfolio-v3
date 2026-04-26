@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { DATA } from "../portfolio-data";
+import "@/styles/portfolio/portfolio-sections-shared.css";
+import "@/styles/portfolio/portfolio-projects.css";
 
 export function ProjectsSection() {
   return (

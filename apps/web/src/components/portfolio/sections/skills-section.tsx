@@ -1,6 +1,8 @@
 // @ts-nocheck
 import { DATA } from "../portfolio-data";
 import { SkillIcon } from "../shared/icons";
+import "@/styles/portfolio/portfolio-sections-shared.css";
+import "@/styles/portfolio/portfolio-skills.css";
 
 export function SkillsSection() {
   return (

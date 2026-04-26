@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as React from "react";
+import "@/styles/portfolio/hero-terminal.css";
 
 // Hero terminal: types lines with dev-oriented CLI on the left and a
 // plain-English gloss on the right. Toggle collapses the gloss column.

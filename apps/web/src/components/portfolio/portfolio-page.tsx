@@ -1,12 +1,12 @@
 // @ts-nocheck
 import * as React from "react";
 
-import "@/styles/portfolio.css";
+import "@/styles/portfolio/portfolio-page.css";
 
 import { useReveal } from "./hooks/use-reveal";
 import { useSystemTheme } from "./hooks/use-system-theme";
 import { useTermPointer } from "./hooks/use-term-pointer";
-import { DATA, NAV_ITEMS, SECTION_IDS, TWEAK_DEFAULTS } from "./portfolio-data";
+import { DATA, SECTION_IDS, TWEAK_DEFAULTS } from "./portfolio-data";
 import { AboutSection } from "./sections/about-section";
 import { ContactSection } from "./sections/contact-section";
 import { EducationSection } from "./sections/education-section";
@@ -18,9 +18,10 @@ import { SkillsSection } from "./sections/skills-section";
 import { WritingSection } from "./sections/writing-section";
 import { CommandPalette } from "./shared/command-palette";
 import { CursorFX } from "./shared/cursor-fx";
-import { HeroTerminal } from "./shared/hero-terminal";
+import { PortfolioHero } from "./shared/portfolio-hero";
+import { PortfolioToast } from "./shared/portfolio-toast";
+import { PortfolioTopBar } from "./shared/portfolio-top-bar";
 import { scrollToSection } from "./shared/scroll-to";
-import { ThemeIcon } from "./shared/theme-icon";
 
 function PortfolioPage() {
   const [t, setTweaks] = React.useState(TWEAK_DEFAULTS);
@@ -144,83 +145,18 @@ function PortfolioPage() {
       <CursorFX mode={t.fxMode} size={t.fxSize} intensity={t.fxIntensity} trail={t.fxTrail}/>
 
       <div className={t.density === "compact" ? "app dense" : "app"} data-screen-label="Portfolio">
+        <PortfolioTopBar
+          scrolled={scrolled}
+          activeSection={active}
+          isMobileNavOpen={mobileNavOpen}
+          isDark={effectiveTheme === "dark"}
+          onOpenCommandPalette={() => setCmdOpen(true)}
+          onToggleTheme={toggleTheme}
+          onToggleMobileNav={() => setMobileNavOpen(open => !open)}
+          onCloseMobileNav={() => setMobileNavOpen(false)}
+        />
 
-        <div className={scrolled ? "scrolled topbar" : "topbar"}>
-          <a href="#top" className="brand">
-            {DATA.handle}<span className="dot">_</span>
-          </a>
-          <nav>
-            <div className="desktop-nav">
-              {NAV_ITEMS.map(([id, label]) => (
-                <a key={id} href={"#" + id}
-                  className={active === id ? 'active' : ''}
-                  onClick={e => { e.preventDefault(); scrollToSection(id); }}>
-                  {label}
-                </a>
-              ))}
-            </div>
-            <button
-              className="k"
-              type="button"
-              onClick={() => { setCmdOpen(true); setMobileNavOpen(false); }}
-              title="Command palette"
-            >
-              <span>⌘K</span>
-            </button>
-            <button
-              className="icon-btn"
-              type="button"
-              onClick={toggleTheme}
-              title="Toggle theme (⇧T)"
-              style={{ marginLeft: 4 }}
-            >
-              <ThemeIcon dark={effectiveTheme === 'dark'}/>
-            </button>
-            <button
-              className="mobile-menu-btn"
-              type="button"
-              aria-label="Toggle navigation"
-              aria-expanded={mobileNavOpen}
-              onClick={() => setMobileNavOpen(open => !open)}
-            >
-              <span/>
-              <span/>
-            </button>
-          </nav>
-          {mobileNavOpen && (
-            <div className="mobile-nav" role="menu">
-              {NAV_ITEMS.map(([id, label]) => (
-                <a key={id} href={"#" + id}
-                  role="menuitem"
-                  className={active === id ? 'active' : ''}
-                  onClick={e => {
-                    e.preventDefault();
-                    setMobileNavOpen(false);
-                    scrollToSection(id);
-                  }}>
-                  {label}
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="hero" id="top">
-          <HeroTerminal/>
-          <div className="name-block reveal">
-            <div>
-              <h1>{DATA.name}</h1>
-              <p className="role">
-                <b>{DATA.role}</b>
-                <span className="sep">·</span>Backend Architect
-                <span className="sep">·</span>Agentic AI
-                <span className="sep">·</span>{DATA.city}
-              </p>
-              <div className="status"><span className="blip"/>available for interesting problems</div>
-            </div>
-            <div className="avatar">{DATA.initials}</div>
-          </div>
-        </div>
+        <PortfolioHero />
 
         <AboutSection/>
         <SkillsSection/>
@@ -235,13 +171,7 @@ function PortfolioPage() {
       </div>
 
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onTheme={toggleTheme} onCopyEmail={copyEmail}/>
-
-      {toast && (
-        <div className={"toast show"}>
-          <span className={toast.ok ? 'ok' : ''}>{toast.ok ? '✓' : '✕'}</span>
-          {toast.msg}
-        </div>
-      )}
+      <PortfolioToast toast={toast}/>
 
     </>
   );
