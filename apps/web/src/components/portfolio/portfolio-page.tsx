@@ -1,20 +1,12 @@
 // @ts-nocheck
 import * as React from "react";
 
-import {
-  TweakRadio,
-  TweakSection,
-  TweakSelect,
-  TweakSlider,
-  TweaksPanel,
-  useTweaks,
-} from "@/components/tweaks-panel";
 import "@/styles/portfolio.css";
 
 import { useReveal } from "./hooks/use-reveal";
 import { useSystemTheme } from "./hooks/use-system-theme";
 import { useTermPointer } from "./hooks/use-term-pointer";
-import { ACCENTS, DATA, NAV_ITEMS, SECTION_IDS, TWEAK_DEFAULTS } from "./portfolio-data";
+import { DATA, NAV_ITEMS, SECTION_IDS, TWEAK_DEFAULTS } from "./portfolio-data";
 import { AboutSection } from "./sections/about-section";
 import { ContactSection } from "./sections/contact-section";
 import { EducationSection } from "./sections/education-section";
@@ -30,10 +22,11 @@ import { HeroTerminal } from "./shared/hero-terminal";
 import { scrollToSection } from "./shared/scroll-to";
 import { ThemeIcon } from "./shared/theme-icon";
 
-const IS_DEV = import.meta.env.DEV;
-
 function PortfolioPage() {
-  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [t, setTweaks] = React.useState(TWEAK_DEFAULTS);
+  const setTweak = React.useCallback((key, value) => {
+    setTweaks(prev => ({ ...prev, [key]: value }));
+  }, []);
   const sys = useSystemTheme();
   const [scrolled, setScrolled] = React.useState(false);
   const [cmdOpen, setCmdOpen] = React.useState(false);
@@ -150,9 +143,9 @@ function PortfolioPage() {
     <>
       <CursorFX mode={t.fxMode} size={t.fxSize} intensity={t.fxIntensity} trail={t.fxTrail}/>
 
-      <div className={"app " + (t.density === 'compact' ? 'dense' : '')} data-screen-label="Portfolio">
+      <div className={t.density === "compact" ? "app dense" : "app"} data-screen-label="Portfolio">
 
-        <div className={"topbar" + (scrolled ? ' scrolled' : '')}>
+        <div className={scrolled ? "scrolled topbar" : "topbar"}>
           <a href="#top" className="brand">
             {DATA.handle}<span className="dot">_</span>
           </a>
@@ -166,10 +159,21 @@ function PortfolioPage() {
                 </a>
               ))}
             </div>
-            <button className="k" onClick={() => { setCmdOpen(true); setMobileNavOpen(false); }} title="Command palette">
+            <button
+              className="k"
+              type="button"
+              onClick={() => { setCmdOpen(true); setMobileNavOpen(false); }}
+              title="Command palette"
+            >
               <span>⌘K</span>
             </button>
-            <button className="icon-btn" onClick={toggleTheme} title="Toggle theme (⇧T)" style={{ marginLeft: 4 }}>
+            <button
+              className="icon-btn"
+              type="button"
+              onClick={toggleTheme}
+              title="Toggle theme (⇧T)"
+              style={{ marginLeft: 4 }}
+            >
               <ThemeIcon dark={effectiveTheme === 'dark'}/>
             </button>
             <button
@@ -239,52 +243,6 @@ function PortfolioPage() {
         </div>
       )}
 
-      {IS_DEV && <TweaksPanel>
-        <TweakSection label="Theme"/>
-        <TweakRadio label="Mode" value={t.theme}
-          options={[{ label: 'auto', value: 'auto' }, { label: 'light', value: 'light' }, { label: 'dark', value: 'dark' }]}
-          onChange={v => setTweak('theme', v)}/>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-          <span style={{ color: 'rgba(41,38,27,.72)', fontWeight: 500 }}>Accent</span>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {ACCENTS.map(c => (
-              <button key={c} onClick={() => setTweak('accent', c)}
-                style={{ width: 18, height: 18, borderRadius: 9, background: c, border: t.accent === c ? '2px solid #000' : '1px solid rgba(0,0,0,.15)', cursor: 'pointer', padding: 0 }}
-                title={c}/>
-            ))}
-          </div>
-        </div>
-
-        <TweakSection label="Type"/>
-        <TweakRadio label="Font" value={t.font}
-          options={[{ label: 'plex', value: 'plex' }, { label: 'inter', value: 'inter' }, { label: 'system', value: 'system' }]}
-          onChange={v => setTweak('font', v)}/>
-
-        <TweakSection label="Layout"/>
-        <TweakRadio label="Density" value={t.density}
-          options={[{ label: 'compact', value: 'compact' }, { label: 'regular', value: 'regular' }]}
-          onChange={v => setTweak('density', v)}/>
-
-        <TweakSection label="Cursor FX"/>
-        <TweakSelect label="Effect" value={t.fxMode}
-          options={[
-            { label: '✨ Glow',       value: 'glow' },
-            { label: '🌈 Aurora',     value: 'aurora' },
-            { label: '🔦 Spotlight',  value: 'spotlight' },
-            { label: '💧 Trail',      value: 'trail' },
-            { label: '✚ Crosshair',  value: 'crosshair' },
-            { label: '⚡ Ripple',     value: 'ripple' },
-            { label: '🦲 Magnet',     value: 'magnet' },
-            { label: '✕ Off',         value: 'off' },
-          ]}
-          onChange={v => setTweak('fxMode', v)}/>
-        <TweakSlider label="Size" value={t.fxSize} min={120} max={1200} step={20}
-          onChange={v => setTweak('fxSize', v)}/>
-        <TweakSlider label="Intensity" value={t.fxIntensity} min={0} max={1} step={.02}
-          onChange={v => setTweak('fxIntensity', v)}/>
-        <TweakSlider label="Follow speed" value={t.fxTrail} min={.02} max={.5} step={.01}
-          onChange={v => setTweak('fxTrail', v)}/>
-      </TweaksPanel>}
     </>
   );
 }
